@@ -20,7 +20,7 @@ public class Main {
         conf.setMapOutputValueClass(IntWritable.class);
 
         conf.setOutputKeyClass(Text.class);
-        conf.setOutputValueClass(IntWritable.class);
+        conf.setOutputValueClass(Text.class);
 
         conf.setMapperClass(LinkBaseMapper.class);
         conf.setReducerClass(LinkBaseReducer.class);
