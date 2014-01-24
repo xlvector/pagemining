@@ -17,7 +17,7 @@ public class Main {
         conf.setJarByClass(Main.class);
 
         conf.setMapOutputKeyClass(Text.class);
-        conf.setMapOutputValueClass(IntWritable.class);
+        conf.setMapOutputValueClass(Text.class);
 
         conf.setOutputKeyClass(Text.class);
         conf.setOutputValueClass(Text.class);
