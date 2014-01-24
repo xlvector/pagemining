@@ -27,7 +27,7 @@ public class Main {
 
         // KeyValueTextInputFormat treats each line as an input record,
         // and splits the line by the tab character to separate it into key and value
-        conf.setInputFormat(KeyValueTextInputFormat.class);
+        conf.setInputFormat(TextInputFormat.class);
         conf.setOutputFormat(SequenceFileOutputFormat.class);
 
         FileInputFormat.setInputPaths(conf, new Path(args[0]));
