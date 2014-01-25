@@ -8,8 +8,8 @@ package org.pagemining.hadoop.linkbase;
  * To change this template use File | Settings | File Templates.
  */
 public class LinkSource {
-    private String srcLink = "";
-    private String anchorText = "";
+    private String srcLink = "null";
+    private String anchorText = "null";
 
     public String getSrcLink() {
         return srcLink;
