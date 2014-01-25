@@ -42,6 +42,7 @@ public class LinkInfo {
 
     public void fromString(String buf){
         String [] tks = buf.split("\t");
+        if(tks.length != 3) return;
         updatedAt = Long.parseLong(tks[0]);
         setSrcLink(tks[1]);
         setAnchorText(tks[2]);
