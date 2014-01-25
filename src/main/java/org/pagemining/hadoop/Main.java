@@ -30,6 +30,7 @@ public class Main {
         conf.setInputFormat(TextInputFormat.class);
         conf.setOutputFormat(SequenceFileOutputFormat.class);
 
+        conf.setNumReduceTasks(8);
         FileInputFormat.setInputPaths(conf, new Path(args[0]));
         FileOutputFormat.setOutputPath(conf, new Path(args[1]));
 
