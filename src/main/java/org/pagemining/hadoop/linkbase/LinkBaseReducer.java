@@ -14,13 +14,15 @@ public class LinkBaseReducer extends MapReduceBase implements Reducer<Text, Text
 
     @Override
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> collector, Reporter reporter) throws IOException {
-        long maxTimeStamp = 0L;
+        int n = 0;
         while (values.hasNext()){
-            Long tm = Long.parseLong(values.next().toString());
-            if(maxTimeStamp < tm){
-                maxTimeStamp = tm;
+            n += 1;
+            LinkInfo linkInfo = new LinkInfo();
+            linkInfo.fromString(values.next().toString());
+            if(linkInfo.getUpdatedAt() > 0) {
+                return;
             }
         }
-        collector.collect(new Text(key), new Text(String.valueOf(maxTimeStamp)));
+        collector.collect(new Text(key), new Text(String.valueOf(n)));
     }
 }

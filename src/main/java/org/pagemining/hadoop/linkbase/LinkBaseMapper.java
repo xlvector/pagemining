@@ -7,6 +7,10 @@ import org.apache.hadoop.mapred.MapReduceBase;
 import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reporter;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
@@ -19,8 +23,22 @@ public class LinkBaseMapper extends MapReduceBase implements Mapper<LongWritable
 
         String timestamp = tks[0];
         String url = tks[1];
+        String html = tks[2];
 
-        collector.collect(new Text(url), new Text(timestamp));
+        Document doc = Jsoup.parse(html);
+        Elements links = doc.select("a[href]");
+
+        for (Element link : links) {
+            String subLink = link.attr("abs:href");
+            String anchorText = link.text();
+            LinkInfo linkInfo = new LinkInfo();
+            linkInfo.setAnchorText(anchorText);
+            linkInfo.setSrcLink(url);
+            collector.collect(new Text(subLink), new Text(linkInfo.toString()));
+        }
+
+        LinkInfo linkInfo = new LinkInfo();
+        linkInfo.setUpdatedAt(Long.parseLong(timestamp));
     }
 }
 
