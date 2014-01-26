@@ -7,6 +7,8 @@ import org.apache.hadoop.mapred.*;
 import org.pagemining.hadoop.linkbase.LinkBaseMapper;
 import org.pagemining.hadoop.linkbase.LinkBaseReducer;
 
+import java.util.Date;
+
 public class Main {
     public static void main(String [] args) throws Exception{
         JobConf conf = new JobConf();
@@ -34,7 +36,7 @@ public class Main {
 
         conf.setNumReduceTasks(8);
         FileInputFormat.setInputPaths(conf, new Path(args[0]));
-        FileOutputFormat.setOutputPath(conf, new Path(args[1]));
+        FileOutputFormat.setOutputPath(conf, new Path(args[1] + "/" + String.valueOf(System.currentTimeMillis())));
 
         JobClient.runJob(conf);
     }
