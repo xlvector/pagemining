@@ -24,8 +24,8 @@ public class Main {
 
         conf.setMapperClass(LinkBaseMapper.class);
         conf.setReducerClass(LinkBaseReducer.class);
-        conf.set("mapreduce.map.memory.mb", "2048");
-        conf.set("mapreduce.reduce.memory.mb", "3000");
+        conf.set("mapreduce.map.memory.mb", "512");
+        conf.set("mapreduce.reduce.memory.mb", "512");
 
         // KeyValueTextInputFormat treats each line as an input record,
         // and splits the line by the tab character to separate it into key and value
