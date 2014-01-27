@@ -6,6 +6,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
 import org.pagemining.hadoop.linkbase.LinkBaseMapper;
 import org.pagemining.hadoop.linkbase.LinkBaseReducer;
+import org.pagemining.hadoop.linkbase.LinkStatMapper;
+import org.pagemining.hadoop.linkbase.LinkStatReducer;
 
 import java.util.Date;
 
@@ -24,8 +26,8 @@ public class Main {
         conf.setOutputKeyClass(Text.class);
         conf.setOutputValueClass(Text.class);
 
-        conf.setMapperClass(LinkBaseMapper.class);
-        conf.setReducerClass(LinkBaseReducer.class);
+        conf.setMapperClass(LinkStatMapper.class);
+        conf.setReducerClass(LinkStatReducer.class);
         conf.set("mapreduce.map.memory.mb", "2048");
         conf.set("mapreduce.reduce.memory.mb", "2048");
 
