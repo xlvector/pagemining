@@ -39,6 +39,7 @@ public class LinkBaseMapper extends MapReduceBase implements Mapper<LongWritable
 
         LinkInfo linkInfo = new LinkInfo();
         linkInfo.setUpdatedAt(Long.parseLong(timestamp));
+        collector.collect(new Text(url), new Text(linkInfo.toString()));
     }
 }
 
