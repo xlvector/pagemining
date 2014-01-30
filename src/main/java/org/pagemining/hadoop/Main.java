@@ -4,6 +4,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
+import org.pagemining.hadoop.infoextract.XPathExtractorMapper;
+import org.pagemining.hadoop.infoextract.XPathExtractorReducer;
 import org.pagemining.hadoop.linkbase.LinkBaseMapper;
 import org.pagemining.hadoop.linkbase.LinkBaseReducer;
 import org.pagemining.hadoop.linkbase.LinkStatMapper;
@@ -26,8 +28,8 @@ public class Main {
         conf.setOutputKeyClass(Text.class);
         conf.setOutputValueClass(Text.class);
 
-        conf.setMapperClass(LinkStatMapper.class);
-        conf.setReducerClass(LinkStatReducer.class);
+        conf.setMapperClass(XPathExtractorMapper.class);
+        conf.setReducerClass(XPathExtractorReducer.class);
         conf.set("mapreduce.map.memory.mb", "2048");
         conf.set("mapreduce.reduce.memory.mb", "2048");
 
