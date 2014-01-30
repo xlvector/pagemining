@@ -1,5 +1,7 @@
 package org.pagemining.hadoop.infoextract;
 
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.MapReduceBase;
@@ -33,11 +35,22 @@ public class XPathExtractorMapper extends MapReduceBase implements Mapper<LongWr
         Elements breadcrumb = doc.select("div.breadcrumb");
         if(breadcrumb.size() == 0) return;
         Elements regions = breadcrumb.get(0).select("span.bread-name");
-        StringBuilder sb = new StringBuilder();
+        JSONObject root = new JSONObject();
+        JSONArray regionArray = new JSONArray();
         for(int i = 0; i < regions.size(); ++i){
-            sb.append(regions.get(i).text());
-            sb.append("|");
+            regionArray.add(regions.get(i).text());
         }
-        collector.collect(new Text(url), new Text(sb.toString()));
+        root.put("regions", regionArray);
+
+        Elements title = doc.select("h1.shop-title");
+        if(title.size() > 0){
+            root.put("title", title.get(0).text());
+        }
+
+        Elements price = doc.select(".stress");
+        if(price.size() > 0){
+            root.put("price", price.get(0).text());
+        }
+        collector.collect(new Text(url), new Text(root.toJSONString()));
     }
 }
