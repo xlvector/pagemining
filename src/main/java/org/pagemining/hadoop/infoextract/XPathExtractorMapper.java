@@ -40,12 +40,12 @@ public class XPathExtractorMapper extends MapReduceBase implements Mapper<LongWr
 
             JSONObject root = new JSONObject();
             for(Map.Entry<String, String> e : site.getAttributes().entrySet()){
-                Elements elements = doc.select(e.getKey());
+                Elements elements = doc.select(e.getValue());
                 if(elements.size() == 0) continue;
                 root.put(e.getKey(), elements.get(0).text());
             }
             for(Map.Entry<String, String> e : site.getArrays().entrySet()){
-                Elements elements = doc.select(e.getKey());
+                Elements elements = doc.select(e.getValue());
                 JSONArray array = new JSONArray();
                 for(int i = 0; i < elements.size(); ++i){
                     array.add(elements.get(i).text());
