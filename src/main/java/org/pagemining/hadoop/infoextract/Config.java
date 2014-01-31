@@ -12,7 +12,7 @@ public class Config {
             "name = 5i5j_exchange",
             "pattern = http://bj.5i5j.com/exchange/[0-9]+",
             "[regions] = .path a",
-            "price = li.price",
+            "total_price = li.price",
             ""
     };
 }
