@@ -32,11 +32,12 @@ public class XPathExtractorMapper extends MapReduceBase implements Mapper<LongWr
         String url = tks[1];
         String html = tks[2];
 
+        Document doc = Jsoup.parse(html);
+
         for(SiteConfig site : config.getSites()){
             if(!url.matches(site.getPattern()))
                 continue;
 
-            Document doc = Jsoup.parse(html);
             JSONObject root = new JSONObject();
             for(Map.Entry<String, String> e : site.getAttributes().entrySet()){
                 Elements elements = doc.select(e.getKey());

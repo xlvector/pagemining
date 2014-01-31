@@ -9,31 +9,31 @@ public class XPathExtractorConfig {
 
     public XPathExtractorConfig(){
         SiteConfig site = new SiteConfig();
-            for(String line : Config.data){
-                line = line.trim();
-                if (line.length() == 0){
-                    if(site.getName() != null && site.getName().length() > 0){
-                        getSites().add(site);
-                        site = new SiteConfig();
-                    }
-                    continue;
+        for(String line : Config.data){
+            line = line.trim();
+            if (line.length() == 0){
+                if(site.getName() != null && site.getName().length() > 0){
+                    getSites().add(site);
                 }
-                String[] kv = line.split("=");
-                String key = kv[0].trim();
-                String val = kv[1].trim();
-                if(key.equalsIgnoreCase("name")){
-                    site.setName(val);
-                }
-                else if (key.equalsIgnoreCase("pattern")){
-                    site.setPattern(val);
-                }
-                else {
-                    site.add(key, val);
-                }
+                site = new SiteConfig();
+                continue;
             }
-            if(site.getName() != null && site.getName().length() > 0){
-                getSites().add(site);
+            String[] kv = line.split("=");
+            String key = kv[0].trim();
+            String val = kv[1].trim();
+            if(key.equalsIgnoreCase("name")){
+                site.setName(val);
             }
+            else if (key.equalsIgnoreCase("pattern")){
+                site.setPattern(val);
+            }
+            else {
+                site.add(key, val);
+            }
+        }
+        if(site.getName() != null && site.getName().length() > 0){
+            getSites().add(site);
+        }
     }
 
     public List<SiteConfig> getSites() {
