@@ -28,8 +28,23 @@ public class Main {
         conf.setOutputKeyClass(Text.class);
         conf.setOutputValueClass(Text.class);
 
-        conf.setMapperClass(XPathExtractorMapper.class);
-        conf.setReducerClass(XPathExtractorReducer.class);
+        String method = args[0];
+        if(method.equals("stat")) {
+            conf.setMapperClass(LinkStatMapper.class);
+            conf.setReducerClass(LinkStatReducer.class);
+        }
+        else if(method.equals("info-extract")) {
+            conf.setMapperClass(XPathExtractorMapper.class);
+            conf.setReducerClass(XPathExtractorReducer.class);
+        }
+        else if(method.equals("link-extract")) {
+            conf.setMapperClass(LinkBaseMapper.class);
+            conf.setReducerClass(LinkBaseReducer.class);
+        }
+        else {
+            System.out.println("Does not support METHOD " + method);
+            System.exit(1);
+        }
         conf.set("mapreduce.map.memory.mb", "2048");
         conf.set("mapreduce.reduce.memory.mb", "2048");
 
@@ -39,8 +54,8 @@ public class Main {
         conf.setOutputFormat(SequenceFileOutputFormat.class);
 
         conf.setNumReduceTasks(8);
-        FileInputFormat.setInputPaths(conf, new Path(args[0]));
-        FileOutputFormat.setOutputPath(conf, new Path(args[1] + "/" + String.valueOf(System.currentTimeMillis())));
+        FileInputFormat.setInputPaths(conf, new Path(args[1]));
+        FileOutputFormat.setOutputPath(conf, new Path(args[2] + "/" + String.valueOf(System.currentTimeMillis())));
 
         JobClient.runJob(conf);
     }

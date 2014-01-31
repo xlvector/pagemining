@@ -21,9 +21,6 @@ public class Config {
             "[authors] = .author a",
             "from = .from a",
             "abstract = .abstract",
-            "",
-            "name = haodf",
-            "pattern = http://www.haodf.com/doctor/[a-zA-Z0-9]+.htm",
             ""
     };
 }
