@@ -6,9 +6,14 @@ import java.util.List;
 
 public class XPathExtractorConfig {
     private List<SiteConfig> sites = new ArrayList<SiteConfig>();
-    public void Load(){
-        SiteConfig site = new SiteConfig();
-            for(String line : Config.data){
+
+    public XPathExtractorConfig(){
+        try {
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(XPathExtractorConfig.class.getResourceAsStream("extract.config")));
+            SiteConfig site = new SiteConfig();
+            while (true){
+                String line = reader.readLine();
                 if (null == line) break;
                 line = line.trim();
                 if (line.length() == 0){
@@ -33,6 +38,14 @@ public class XPathExtractorConfig {
             if(site.getName() != null && site.getName().length() > 0){
                 getSites().add(site);
             }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     public List<SiteConfig> getSites() {

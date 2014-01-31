@@ -34,7 +34,7 @@ public class XPathExtractorMapper extends MapReduceBase implements Mapper<LongWr
 
         for(SiteConfig site : config.getSites()){
             if(!url.matches(site.getPattern()))
-                return;
+                continue;
 
             Document doc = Jsoup.parse(html);
             JSONObject root = new JSONObject();
