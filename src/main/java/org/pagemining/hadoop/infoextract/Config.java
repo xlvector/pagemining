@@ -13,6 +13,15 @@ public class Config {
             "pattern = http://bj.5i5j.com/exchange/[0-9]+",
             "[regions] = .path a",
             "total_price = li.price",
+            "",
+            "name = cnki_qikan",
+            "pattern = http://lib.cnki.net/cjfd/[A-Z0-9]+.html",
+            "[authors] = .author a",
+            "from = .from a",
+            "abstract = .abstract",
+            "",
+            "name = haodf",
+            "pattern = http://www.haodf.com/doctor/[a-zA-Z0-9]+.htm",
             ""
     };
 }
