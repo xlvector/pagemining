@@ -10,7 +10,7 @@ public class XPathExtractorConfig {
     public XPathExtractorConfig(){
         try {
             BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(XPathExtractorConfig.class.getResourceAsStream("extract.config")));
+                    new InputStreamReader(XPathExtractorConfig.class.getResourceAsStream("/extract.config")));
             SiteConfig site = new SiteConfig();
             while (true){
                 String line = reader.readLine();
