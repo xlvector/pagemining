@@ -7,7 +7,12 @@ public class Config {
             "title = h1.shop-title",
             "price = .stress",
             "address = [itemprop=street-address]",
-            "[regions] = [itemprop=title]",
+            "[regions] = .breadcrumb .bread-name",
+            "",
+            "name = 5i5j_exchange",
+            "pattern = ",
+            "[regions] = .path a",
+            "price = li.price",
             ""
     };
 }

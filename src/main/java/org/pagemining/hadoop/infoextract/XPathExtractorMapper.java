@@ -39,6 +39,8 @@ public class XPathExtractorMapper extends MapReduceBase implements Mapper<LongWr
                 continue;
 
             JSONObject root = new JSONObject();
+            root.put("name", site.getName());
+            root.put("pattern", site.getPattern());
             for(Map.Entry<String, String> e : site.getAttributes().entrySet()){
                 Elements elements = doc.select(e.getValue());
                 if(elements.size() == 0) continue;
