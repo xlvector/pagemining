@@ -15,11 +15,16 @@ import org.jsoup.select.Elements;
 import org.pagemining.hadoop.linkbase.LinkInfo;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class XPathExtractorMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text> {
+    private XPathExtractorConfig config = null;
 
     @Override
     public void map(LongWritable key, Text value, OutputCollector<Text, Text> collector, Reporter reporter) throws IOException {
+        if(config == null){
+            config = new XPathExtractorConfig();
+        }
         String [] tks = value.toString().split("\t");
         if(tks.length != 3) return;
 
@@ -27,30 +32,26 @@ public class XPathExtractorMapper extends MapReduceBase implements Mapper<LongWr
         String url = tks[1];
         String html = tks[2];
 
-        if(!url.matches("http://www.dianping.com/shop/[0-9]+/")
-            && !url.matches("http://www.dianping.com/shop/[0-9]+"))
-            return;
+        for(SiteConfig site : config.getSites()){
+            if(!url.matches(site.getPattern()))
+                return;
 
-        Document doc = Jsoup.parse(html);
-        Elements breadcrumb = doc.select("div.breadcrumb");
-        if(breadcrumb.size() == 0) return;
-        Elements regions = breadcrumb.get(0).select("span.bread-name");
-        JSONObject root = new JSONObject();
-        JSONArray regionArray = new JSONArray();
-        for(int i = 0; i < regions.size(); ++i){
-            regionArray.add(regions.get(i).text());
+            Document doc = Jsoup.parse(html);
+            JSONObject root = new JSONObject();
+            for(Map.Entry<String, String> e : site.getAttributes().entrySet()){
+                Elements elements = doc.select(e.getKey());
+                if(elements.size() == 0) continue;
+                root.put(e.getKey(), elements.get(0).text());
+            }
+            for(Map.Entry<String, String> e : site.getArrays().entrySet()){
+                Elements elements = doc.select(e.getKey());
+                JSONArray array = new JSONArray();
+                for(int i = 0; i < elements.size(); ++i){
+                    array.add(elements.get(i).text());
+                }
+                root.put(e.getKey(), array);
+            }
+            collector.collect(new Text(url), new Text(root.toJSONString()));
         }
-        root.put("regions", regionArray);
-
-        Elements title = doc.select("h1.shop-title");
-        if(title.size() > 0){
-            root.put("title", title.get(0).text());
-        }
-
-        Elements price = doc.select(".stress");
-        if(price.size() > 0){
-            root.put("price", price.get(0).text());
-        }
-        collector.collect(new Text(url), new Text(root.toJSONString()));
     }
 }
