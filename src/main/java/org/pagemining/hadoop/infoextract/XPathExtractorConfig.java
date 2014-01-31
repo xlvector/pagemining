@@ -1,9 +1,6 @@
 package org.pagemining.hadoop.infoextract;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +8,8 @@ public class XPathExtractorConfig {
     private List<SiteConfig> sites = new ArrayList<SiteConfig>();
     public void Load(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("extract.config"));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(XPathExtractorConfig.class.getResourceAsStream("extract.config")));
             SiteConfig site = new SiteConfig();
             while (true){
                 String line = reader.readLine();
