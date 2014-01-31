@@ -6,6 +6,7 @@ public class Config {
             "pattern = http://www.dianping.com/shop/[0-9]+",
             "title = h1.shop-title",
             "price = .stress",
+            "address = [itemprop=street-address]",
             "[regions] = [itemprop=title]",
             ""
     };
