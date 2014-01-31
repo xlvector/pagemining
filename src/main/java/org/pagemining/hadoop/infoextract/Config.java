@@ -13,6 +13,8 @@ public class Config {
             "pattern = http://bj.5i5j.com/exchange/[0-9]+",
             "[regions] = .path a",
             "total_price = li.price",
+            "unit_price = .sprice:contains(单价)",
+            "area = .sprice:contains(面积)",
             "",
             "name = cnki_qikan",
             "pattern = http://lib.cnki.net/cjfd/[A-Z0-9]+.html",
