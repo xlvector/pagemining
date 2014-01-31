@@ -10,7 +10,7 @@ public class Config {
             "[regions] = .breadcrumb .bread-name",
             "",
             "name = 5i5j_exchange",
-            "pattern = ",
+            "pattern = http://bj.5i5j.com/exchange/[0-9]+",
             "[regions] = .path a",
             "price = li.price",
             ""
