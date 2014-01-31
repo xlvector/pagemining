@@ -16,6 +16,7 @@ public class XPathExtractorConfig {
                         getSites().add(site);
                         site = new SiteConfig();
                     }
+                    continue;
                 }
                 String[] kv = line.split("=");
                 String key = kv[0].trim();
