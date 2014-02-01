@@ -54,7 +54,7 @@ public class Main {
         conf.setOutputFormat(SequenceFileOutputFormat.class);
 
         conf.setNumReduceTasks(8);
-        FileInputFormat.setInputPaths(conf, new Path(args[1]));
+        FileInputFormat.addInputPaths(conf, args[1]);
         FileOutputFormat.setOutputPath(conf, new Path(args[2] + "/" + String.valueOf(System.currentTimeMillis())));
 
         JobClient.runJob(conf);
