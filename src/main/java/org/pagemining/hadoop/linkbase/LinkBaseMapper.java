@@ -13,8 +13,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LinkBaseMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text> {
+
+    private Map<String, Integer> cache = new HashMap<String, Integer>();
 
     @Override
     public void map(LongWritable key, Text value, OutputCollector<Text, Text> collector, Reporter reporter) throws IOException {
@@ -30,7 +34,18 @@ public class LinkBaseMapper extends MapReduceBase implements Mapper<LongWritable
 
         for (Element link : links) {
             String subLink = link.attr("abs:href");
-            collector.collect(new Text(subLink), new Text("1"));
+            if(!cache.containsKey(subLink)){
+                cache.put(subLink, 1);
+            }
+            else {
+                cache.put(subLink, 1 + cache.get(subLink));
+            }
+        }
+        if(cache.size() > 100000){
+            for(Map.Entry<String, Integer> e : cache.entrySet()){
+                collector.collect(new Text(e.getKey()), new Text(String.valueOf(e.getValue())));
+            }
+            cache = new HashMap<String, Integer>();
         }
     }
 }

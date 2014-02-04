@@ -18,8 +18,7 @@ public class LinkBaseReducer extends MapReduceBase implements Reducer<Text, Text
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> collector, Reporter reporter) throws IOException {
         int n = 0;
         while (values.hasNext()){
-            values.next();
-            n += 1;
+            n += Integer.parseInt(values.next().toString());
         }
         collector.collect(new Text(key), new Text(String.valueOf(n)));
     }
