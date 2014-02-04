@@ -16,16 +16,11 @@ public class LinkBaseReducer extends MapReduceBase implements Reducer<Text, Text
 
     @Override
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> collector, Reporter reporter) throws IOException {
-        Set<String> sources = new HashSet<String>();
-        boolean hasDownload = false;
+        int n = 0;
         while (values.hasNext()){
-            LinkInfo linkInfo = new LinkInfo();
-            linkInfo.fromString(values.next().toString());
-            sources.add(linkInfo.getSrcLink());
-            if(linkInfo.getUpdatedAt() > 0) {
-                hasDownload = true;
-            }
+            values.next();
+            n += 1;
         }
-        collector.collect(new Text(key), new Text(String.valueOf(sources.size()) + "\t" + String.valueOf(hasDownload)));
+        collector.collect(new Text(key), new Text(String.valueOf(n)));
     }
 }

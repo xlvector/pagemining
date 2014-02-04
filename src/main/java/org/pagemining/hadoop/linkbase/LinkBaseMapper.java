@@ -30,16 +30,8 @@ public class LinkBaseMapper extends MapReduceBase implements Mapper<LongWritable
 
         for (Element link : links) {
             String subLink = link.attr("abs:href");
-            String anchorText = link.text();
-            LinkInfo linkInfo = new LinkInfo();
-            linkInfo.setAnchorText(anchorText);
-            linkInfo.setSrcLink(url);
-            collector.collect(new Text(subLink), new Text(linkInfo.toString()));
+            collector.collect(new Text(subLink), new Text("1"));
         }
-
-        LinkInfo linkInfo = new LinkInfo();
-        linkInfo.setUpdatedAt(Long.parseLong(timestamp));
-        collector.collect(new Text(url), new Text(linkInfo.toString()));
     }
 }
 
