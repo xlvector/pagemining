@@ -11,8 +11,6 @@ import org.pagemining.hadoop.linkbase.LinkBaseReducer;
 import org.pagemining.hadoop.linkbase.LinkStatMapper;
 import org.pagemining.hadoop.linkbase.LinkStatReducer;
 
-import java.util.Date;
-
 public class Main {
     public static void main(String [] args) throws Exception{
         JobConf conf = new JobConf();

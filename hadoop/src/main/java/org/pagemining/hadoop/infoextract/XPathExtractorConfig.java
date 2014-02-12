@@ -1,6 +1,5 @@
 package org.pagemining.hadoop.infoextract;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
