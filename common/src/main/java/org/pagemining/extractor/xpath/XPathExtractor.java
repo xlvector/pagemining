@@ -99,8 +99,8 @@ public class XPathExtractor implements Extractor {
                 continue;
 
             JSONObject root = (JSONObject)extractDocument(doc, site.getJSONObject());
-            root.put("name", site.getName());
-            root.put("pattern", site.getPattern());
+            root.put("_name", site.getName());
+            root.put("_pattern", site.getPattern());
             return root;
         }
         return null;
