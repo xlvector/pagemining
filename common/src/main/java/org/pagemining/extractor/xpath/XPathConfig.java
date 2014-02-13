@@ -1,63 +1,40 @@
 package org.pagemining.extractor.xpath;
 
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
+import net.minidev.json.parser.JSONParser;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class XPathConfig {
-    private String name;
-    private String pattern;
-    private Map<String, String> attributes = new HashMap<String, String>();
-    private Map<String, String> arrays = new HashMap<String, String>();
+    private JSONObject jsonObject = new JSONObject();
 
     public void fromString(String buf){
-        String [] lines = buf.split(";");
-        for(String line : lines){
-            line = line.trim();
-            String[] kv = line.split("=", 2);
-            if(kv.length != 2) continue;
-            String key = kv[0].trim();
-            String val = kv[1].trim();
-            if(key.equalsIgnoreCase("name")){
-                this.setName(val);
-            }
-            else if (key.equalsIgnoreCase("pattern")){
-                this.setPattern(val);
-            }
-            else {
-                this.add(key, val);
-            }
-        }
+        jsonObject = (JSONObject)JSONValue.parse(buf);
     }
 
     public String getName() {
-        return name;
+        return jsonObject.get("_name").toString();
     }
 
     public void setName(String name) {
-        this.name = name;
+        jsonObject.put("_name", name);
     }
 
     public String getPattern() {
-        return pattern;
+        return jsonObject.get("_pattern").toString();
     }
 
     public void setPattern(String pattern) {
-        this.pattern = pattern;
+        jsonObject.put("_pattern", pattern);
     }
 
-    public Map<String, String> getAttributes() {
-        return attributes;
+    public JSONObject getJSONObject(){
+        return jsonObject;
     }
 
-    public Map<String, String> getArrays() {
-        return arrays;
-    }
-
-    public void add(String key, String value){
-        if (key.charAt(0) == '['){
-            this.getArrays().put(key.substring(1, key.length() - 1), value);
-        } else {
-            this.getAttributes().put(key, value);
-        }
+    public void add(String key, Object value){
+        jsonObject.put(key, value);
     }
 }

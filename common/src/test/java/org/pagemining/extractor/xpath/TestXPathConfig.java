@@ -7,10 +7,8 @@ public class TestXPathConfig {
     @Test
     public void Test(){
         XPathConfig config = new XPathConfig();
-        config.add("[a]", "#aaa");
         config.add("b", "#bbb");
-        Assert.assertEquals(config.getAttributes().get("b"), "#bbb");
-        Assert.assertEquals(config.getArrays().get("a"), "#aaa");
+        Assert.assertEquals((String)config.getJSONObject().get("b"), "#bbb");
 
         config.setPattern("http://[a-z0-9]+.pageming.org/.*.html");
         Assert.assertEquals(config.getPattern(), "http://[a-z0-9]+.pageming.org/.*.html");

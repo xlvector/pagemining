@@ -8,7 +8,6 @@ import org.junit.Test;
 public class TestXPathExtractor {
     @Test
     public void Test(){
-        XPathConfig config = new XPathConfig();
 
         String html = "<html>\n" +
                 "\t<head>\n" +
@@ -16,35 +15,41 @@ public class TestXPathExtractor {
                 "\t</head>\n" +
                 "\t<body>\n" +
                 "\t\t<div class=\"hello world\">\n" +
-                "\t\t\t<span>aaa</span>\n" +
-                "\t\t\t<span>bbb</span>\n" +
+                "\t\t\t<span><div class=\"c1\">aa1</div><div class=\"c2\">aa2</div></span>\n" +
+                "\t\t\t<span><div class=\"c1\">bb1</div><div class=\"c2\">bb2</div></span>\n" +
                 "\t\t</div>\n" +
                 "\t\t<div id=\"easy\">\n" +
-                "\t\t\tI am happy\n" +
+                "\t\t\tI am happy 18665108545\n" +
                 "\t\t</div>\n" +
                 "\t</body>\n" +
                 "</html>";
 
-        config.setPattern(".*");
-        config.add("[a1]", ".world span");
-        config.add("a2", "#easy");
-        config.setName("test");
+        String template = "{\n" +
+                "\t\"_name\" : \"test\",\n" +
+                "\t\"_pattern\" : \".*\",\n" +
+                "\t\"a1\" : {\n" +
+                "\t\t\"_root\" : \".world span\",\n" +
+                "\t\t\"c1\" : \".c1\",\n" +
+                "\t\t\"c2\" : \".c2\"\n" +
+                "\t},\n" +
+                "\t\"a2\" : \"#easy, ([0-9]+)\"\n" +
+                "}";
+        XPathConfig config = new XPathConfig();
+        config.fromString(template);
         XPathExtractor extractor = new XPathExtractor();
         extractor.AddConfig(config);
         JSONObject json = extractor.extract("http://pageminig.org", html);
 
-        Assert.assertEquals(json.get("a2").toString(), "I am happy");
+        Assert.assertEquals(json.get("a2").toString(), "18665108545");
         JSONArray a1 = (JSONArray) json.get("a1");
-        Assert.assertEquals(a1.get(0).toString(), "aaa");
-        Assert.assertEquals(a1.get(1).toString(), "bbb");
+        Assert.assertEquals(((JSONObject)a1.get(0)).get("c1").toString(), "aa1");
+        Assert.assertEquals(((JSONObject)a1.get(1)).get("c2").toString(), "bb2");
     }
 
     @Test
     public void TestLink(){
         XPathConfig config = new XPathConfig();
-        config.setPattern(".*");
-        config.add("address",".field-group:contains(地址)");
-        config.setName("test");
+        config.fromString("{\"_name\":\"dianping-shop\",\"_pattern\":\".*\",\"links\":\"[href]\"}");
         XPathExtractor extractor = new XPathExtractor();
         extractor.AddConfig(config);
         JSONObject json = extractor.extract("http://sh.meituan.com/shop/1486684");

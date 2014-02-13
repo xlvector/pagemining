@@ -4,6 +4,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
+import org.pagemining.hadoop.infoextract.XPathConfigReader;
 import org.pagemining.hadoop.infoextract.XPathExtractorMapper;
 import org.pagemining.hadoop.infoextract.XPathExtractorReducer;
 import org.pagemining.hadoop.linkbase.LinkBaseMapper;
@@ -32,6 +33,8 @@ public class Main {
             conf.setReducerClass(LinkStatReducer.class);
         }
         else if(method.equals("info-extract")) {
+            String xpathConfig = XPathConfigReader.readConfig("xpath.config");
+            conf.set("xpath.config", xpathConfig);
             conf.setMapperClass(XPathExtractorMapper.class);
             conf.setReducerClass(XPathExtractorReducer.class);
         }

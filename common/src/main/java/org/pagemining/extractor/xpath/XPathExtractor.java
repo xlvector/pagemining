@@ -4,6 +4,7 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.pagemining.extractor.Extractor;
 
@@ -12,6 +13,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class XPathExtractor implements Extractor {
     private List<XPathConfig> configs = new ArrayList<XPathConfig>();
@@ -20,27 +23,84 @@ public class XPathExtractor implements Extractor {
         configs.add(config);
     }
 
+    private String extractText(Element element, String extractor){
+        if(extractor == null){
+            return element.text();
+        }
+        Pattern p = Pattern.compile(extractor);
+        Matcher m = p.matcher(element.text());
+        if(m.find()){
+            return m.group(1);
+        }
+        else{
+            return element.text();
+        }
+    }
+
+    private Object extractDocumentByStringTemplate(Element doc, String template){
+        String [] tks = template.split(",", 2);
+        String extractor = null;
+        String selector = tks[0].trim();
+        if (tks.length > 1){
+            extractor = tks[1].trim();
+        }
+        Elements elements = doc.select(selector);
+        if(elements.size() == 0) return null;
+        else if(elements.size() == 1) return extractText(elements.get(0), extractor);
+        else{
+            JSONArray jsonArray = new JSONArray();
+            for(int i = 0; i < elements.size(); ++i){
+                jsonArray.add(extractText(elements.get(i), extractor));
+            }
+            return jsonArray;
+        }
+    }
+
+    private Object extractDocument(Element doc, Object template){
+        if(template instanceof String){
+            return extractDocumentByStringTemplate(doc, (String) (template));
+        }
+        else if(template instanceof JSONObject){
+            JSONObject templateJSON = (JSONObject)template;
+            String rootSelector = "html";
+            if(templateJSON.containsKey("_root")){
+                rootSelector = (String)templateJSON.get("_root");
+            }
+            Elements elements = doc.select(rootSelector);
+            if(elements.size() == 0) return null;
+            else {
+                JSONArray array = new JSONArray();
+                for(int i = 0; i < elements.size(); i++){
+                    Element element = elements.get(i);
+                    JSONObject elementJson = new JSONObject();
+                    for(Map.Entry<String, Object> e : templateJSON.entrySet()){
+                        if(e.getKey().isEmpty()) continue;
+                        if(e.getKey().charAt(0) == '_') continue;
+                        elementJson.put(e.getKey(), extractDocument(element, e.getValue()));
+                    }
+                    array.add(elementJson);
+                }
+                if(array.size() == 1){
+                    return (JSONObject)(array.get(0));
+                }
+                else {
+                    return array;
+                }
+            }
+        }
+        else{
+            return null;
+        }
+    }
+
     private JSONObject extractDocument(String url, Document doc){
         for(XPathConfig site : configs){
             if(!url.matches(site.getPattern()))
                 continue;
 
-            JSONObject root = new JSONObject();
+            JSONObject root = (JSONObject)extractDocument(doc, site.getJSONObject());
             root.put("name", site.getName());
             root.put("pattern", site.getPattern());
-            for(Map.Entry<String, String> e : site.getAttributes().entrySet()){
-                Elements elements = doc.select(e.getValue());
-                if(elements.size() == 0) continue;
-                root.put(e.getKey(), elements.get(0).text());
-            }
-            for(Map.Entry<String, String> e : site.getArrays().entrySet()){
-                Elements elements = doc.select(e.getValue());
-                JSONArray array = new JSONArray();
-                for(int i = 0; i < elements.size(); ++i){
-                    array.add(elements.get(i).text());
-                }
-                root.put(e.getKey(), array);
-            }
             return root;
         }
         return null;
