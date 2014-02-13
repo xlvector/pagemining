@@ -40,6 +40,8 @@ public class XPathExtractorMapper extends MapReduceBase implements Mapper<LongWr
         String html = tks[2];
 
         JSONObject jsonDoc = extractor.extract(url, html);
-        collector.collect(new Text(url), new Text(jsonDoc.toString()));
+        if(jsonDoc != null){
+            collector.collect(new Text(url), new Text(jsonDoc.toString()));
+        }
     }
 }
