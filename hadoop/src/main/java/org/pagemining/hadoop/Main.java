@@ -47,7 +47,7 @@ public class Main {
             System.exit(1);
         }
         conf.set("mapreduce.map.memory.mb", "1024");
-        conf.set("mapreduce.reduce.memory.mb", "1024");
+        conf.set("mapreduce.reduce.memory.mb", "2048");
 
         // KeyValueTextInputFormat treats each line as an input record,
         // and splits the line by the tab character to separate it into key and value
