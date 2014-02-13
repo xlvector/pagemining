@@ -33,7 +33,7 @@ public class Main {
             conf.setReducerClass(LinkStatReducer.class);
         }
         else if(method.equals("info-extract")) {
-            String xpathConfig = XPathConfigReader.readConfig("xpath.config");
+            String xpathConfig = XPathConfigReader.readConfig(args[3]);
             conf.set("xpath.config", xpathConfig);
             conf.setMapperClass(XPathExtractorMapper.class);
             conf.setReducerClass(XPathExtractorReducer.class);
