@@ -13,6 +13,12 @@ public class HiveLinkStatReducer extends MapReduceBase implements Reducer<Text, 
 
     @Override
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> collector, Reporter reporter) throws IOException {
-        collector.collect(new Text(key), new Text("1"));
+        while (values.hasNext()){
+            String [] tks = key.toString().split("\t");
+            if(tks.length != 2) continue;
+            String link = tks[0];
+            String domain = tks[1];
+            collector.collect(new Text(link + "\t" + values.next().toString()), new Text(domain));
+        }
     }
 }

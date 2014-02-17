@@ -24,7 +24,7 @@ public class HiveLinkStatMapper extends MapReduceBase implements Mapper<LongWrit
 
         try{
             URL url = new URL(link);
-            collector.collect(new Text(link + "\t" + String.valueOf(timestamp) + "\t" + url.getHost()), new Text("1"));
+            collector.collect(new Text(link + "\t" + url.getHost()), new Text(String.valueOf(timestamp)));
         }
         catch (MalformedURLException e){
             return;
