@@ -23,22 +23,27 @@ public class XPathExtractor implements Extractor {
         configs.add(config);
     }
 
-    private String extractText(Element element, String extractor){
+    private String extractText(String text, String extractor){
         if(extractor == null){
-            return element.text();
+            return text;
         }
         Pattern p = Pattern.compile(extractor);
-        Matcher m = p.matcher(element.text());
+        Matcher m = p.matcher(text);
         if(m.find()){
             return m.group(1);
         }
         else{
-            return element.text();
+            return text;
         }
     }
 
     private Object extractDocumentByStringTemplate(Element doc, String template){
-        String [] tks = template.split(",", 2);
+        if(template.charAt(0) == '{' && template.charAt(template.length() - 1) == '}'){
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(template.substring(1, template.length() - 1));
+            return jsonArray;
+        }
+        String [] tks = template.split(",", 3);
         String extractor = null;
         String selector = tks[0].trim();
         if (tks.length > 1){
@@ -46,11 +51,21 @@ public class XPathExtractor implements Extractor {
         }
         Elements elements = doc.select(selector);
         if(elements.size() == 0) return null;
-        else if(elements.size() == 1) return extractText(elements.get(0), extractor);
+        else if(elements.size() == 1) {
+            String text = elements.get(0).text();
+            if(tks.length == 3){
+                text = elements.get(0).attr(tks[2]);
+            }
+            return extractText(text, extractor);
+        }
         else{
             JSONArray jsonArray = new JSONArray();
             for(int i = 0; i < elements.size(); ++i){
-                jsonArray.add(extractText(elements.get(i), extractor));
+                String text = elements.get(i).text();
+                if(tks.length == 3){
+                    text = elements.get(i).attr(tks[2]);
+                }
+                jsonArray.add(extractText(text, extractor));
             }
             return jsonArray;
         }
