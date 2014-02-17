@@ -1,5 +1,6 @@
 package org.pagemining.hadoop;
 
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -7,10 +8,7 @@ import org.apache.hadoop.mapred.*;
 import org.pagemining.hadoop.infoextract.XPathConfigReader;
 import org.pagemining.hadoop.infoextract.XPathExtractorMapper;
 import org.pagemining.hadoop.infoextract.XPathExtractorReducer;
-import org.pagemining.hadoop.linkbase.LinkBaseMapper;
-import org.pagemining.hadoop.linkbase.LinkBaseReducer;
-import org.pagemining.hadoop.linkbase.LinkStatMapper;
-import org.pagemining.hadoop.linkbase.LinkStatReducer;
+import org.pagemining.hadoop.linkbase.*;
 
 public class Main {
     public static void main(String [] args) throws Exception{
@@ -31,6 +29,10 @@ public class Main {
         if(method.equals("stat")) {
             conf.setMapperClass(LinkStatMapper.class);
             conf.setReducerClass(LinkStatReducer.class);
+        }
+        else if(method.equals("hive-link")) {
+            conf.setMapperClass(HiveLinkStatMapper.class);
+            conf.setReducerClass(HiveLinkStatReducer.class);
         }
         else if(method.equals("info-extract")) {
             String xpathConfig = XPathConfigReader.readConfig(args[3]);
@@ -55,8 +57,10 @@ public class Main {
         conf.setOutputFormat(SequenceFileOutputFormat.class);
 
         conf.setNumReduceTasks(8);
+        FileSystem fs = FileSystem.get(conf);
+        fs.delete(new Path(args[2]), true);
         FileInputFormat.addInputPaths(conf, args[1]);
-        FileOutputFormat.setOutputPath(conf, new Path(args[2] + "/" + String.valueOf(System.currentTimeMillis())));
+        FileOutputFormat.setOutputPath(conf, new Path(args[2]));
 
         JobClient.runJob(conf);
     }
