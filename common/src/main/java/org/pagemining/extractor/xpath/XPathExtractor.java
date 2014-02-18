@@ -39,9 +39,7 @@ public class XPathExtractor implements Extractor {
 
     private Object extractDocumentByStringTemplate(Element doc, String template){
         if(template.charAt(0) == '{' && template.charAt(template.length() - 1) == '}'){
-            JSONArray jsonArray = new JSONArray();
-            jsonArray.add(template.substring(1, template.length() - 1));
-            return jsonArray;
+            return template.substring(1, template.length() - 1);
         }
         String [] tks = template.split(",", 3);
         String extractor = null;
