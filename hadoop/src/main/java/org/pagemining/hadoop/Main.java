@@ -5,6 +5,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
+import org.pagemining.hadoop.infoextract.HBaseUtil;
 import org.pagemining.hadoop.infoextract.XPathConfigReader;
 import org.pagemining.hadoop.infoextract.XPathExtractorMapper;
 import org.pagemining.hadoop.infoextract.XPathExtractorReducer;
@@ -35,6 +36,8 @@ public class Main {
             conf.setReducerClass(HiveLinkStatReducer.class);
         }
         else if(method.equals("info-extract")) {
+            String[] cf = {"data"};
+            HBaseUtil.createTableIfNotExist("crawler-structured-data", conf, cf);
             String xpathConfig = XPathConfigReader.readConfig(args[3]);
             conf.set("xpath.config", xpathConfig);
             conf.setMapperClass(XPathExtractorMapper.class);
