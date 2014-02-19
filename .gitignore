@@ -1,3 +1,4 @@
+*.diff
 .idea
 *.xml
 !pom.xml
