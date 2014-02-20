@@ -3,9 +3,7 @@ package org.pagemining.hadoop.infoextract;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -30,6 +28,24 @@ public class HBaseUtil {
             put.add(colFamily.getBytes(), col.getKey().getBytes(), col.getValue().getBytes());
         }
         table.put(put);
+    }
+
+    public static void scan(HTable table, int limit) {
+        try {
+            ResultScanner rs = table.getScanner(new Scan());
+            int n = 0;
+            for (Result r : rs) {
+                if(++n > limit) break;
+                System.out.println(new String(r.getRow()));
+                for (KeyValue keyValue : r.raw()) {
+                    System.out.println(new String(keyValue.getFamily()));
+                    System.out.println(new String(keyValue.getValue()));
+                }
+                System.out.println("========");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
