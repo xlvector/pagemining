@@ -36,10 +36,10 @@ public class HBaseUtil {
             int n = 0;
             for (Result r : rs) {
                 if(++n > limit) break;
-                System.out.println(new String(r.getRow()));
+                System.out.println(new String(r.getRow(), "UTF-8"));
                 for (KeyValue keyValue : r.raw()) {
-                    System.out.println(new String(keyValue.getFamily()));
-                    System.out.println(new String(keyValue.getValue()));
+                    System.out.println(new String(keyValue.getFamily(), "UTF-8"));
+                    System.out.println(new String(keyValue.getValue(), "UTF-8"));
                 }
                 System.out.println("========");
             }
