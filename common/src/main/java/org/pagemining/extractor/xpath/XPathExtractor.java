@@ -108,13 +108,14 @@ public class XPathExtractor implements Extractor {
 
     private JSONObject extractDocument(String url, Document doc){
         for(XPathConfig site : configs){
-            if(!url.matches(site.getPattern()))
-                continue;
-
-            JSONObject root = (JSONObject)extractDocument(doc, site.getJSONObject());
-            root.put("_name", site.getName());
-            root.put("_pattern", site.getPattern());
-            return root;
+            Pattern pt = Pattern.compile(site.getPattern());
+            Matcher matcher = pt.matcher(url);
+            if(matcher.groupCount() == 1 && matcher.group(0).equals(url)){
+                JSONObject root = (JSONObject)extractDocument(doc, site.getJSONObject());
+                root.put("_name", site.getName());
+                root.put("_pattern", site.getPattern());
+                return root;
+            }
         }
         return null;
     }
