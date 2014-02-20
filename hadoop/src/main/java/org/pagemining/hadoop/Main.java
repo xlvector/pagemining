@@ -10,6 +10,7 @@ import org.pagemining.hadoop.infoextract.XPathConfigReader;
 import org.pagemining.hadoop.infoextract.XPathExtractorMapper;
 import org.pagemining.hadoop.infoextract.XPathExtractorReducer;
 import org.pagemining.hadoop.linkbase.*;
+import org.slf4j.Logger;
 
 public class Main {
     public static void main(String [] args) throws Exception{
@@ -38,6 +39,7 @@ public class Main {
         else if(method.equals("info-extract")) {
             String[] cf = {"data"};
             HBaseUtil.createTableIfNotExist("crawler-structured-data", conf, cf);
+
             String xpathConfig = XPathConfigReader.readConfig(args[3]);
             conf.set("xpath.config", xpathConfig);
             conf.setMapperClass(XPathExtractorMapper.class);

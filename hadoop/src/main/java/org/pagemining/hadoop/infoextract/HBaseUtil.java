@@ -21,6 +21,7 @@ public class HBaseUtil {
         for(String familyName : familyNames){
             descriptor.addFamily(new HColumnDescriptor(familyName));
         }
+        admin.createTable(descriptor);
     }
 
     public static void insert(String colFamily, HTable table, String key, Map<String, String> columns) throws IOException {
