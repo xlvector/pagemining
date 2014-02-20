@@ -54,4 +54,9 @@ public class XPathExtractorReducer extends MapReduceBase implements Reducer<Text
             return;
         }
     }
+
+    @Override
+    public void close() throws IOException {
+        table.close();
+    }
 }
