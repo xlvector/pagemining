@@ -25,7 +25,7 @@ public class HBaseUtil {
     public static void insert(String colFamily, HTable table, String key, Map<String, String> columns) throws IOException {
         Put put = new Put(key.getBytes());
         for(Map.Entry<String, String> col : columns.entrySet()){
-            put.add(colFamily.getBytes(), col.getKey().getBytes(), col.getValue().getBytes());
+            put.add(colFamily.getBytes(), col.getKey().getBytes("UTF-8"), col.getValue().getBytes("UTF-8"));
         }
         table.put(put);
     }
