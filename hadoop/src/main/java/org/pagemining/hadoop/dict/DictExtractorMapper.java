@@ -50,7 +50,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         for(Map.Entry<String, Object> e : jsonObject.entrySet()){
             context.write(new Text(e.getKey()), new Text("1"));
             context.write(new Text("相关词条"), new Text("1"));
-            if(!e.getKey().equals("_name")) continue;
+            if(!e.getKey().trim().equals("相关词条".trim())) continue;
             Object obj = e.getValue();
             if(obj instanceof String){
                 context.write(new Text((String)obj), new Text("1"));
