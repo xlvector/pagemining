@@ -27,10 +27,8 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         }
         if(jsonObject == null) return;
 
-        String query = new String("相关词条".getBytes(), "UTF-8");
-
-        if(jsonObject.containsKey(query)){
-            Object obj = jsonObject.get(query);
+        Object obj = jsonObject.get("相关词条");
+        if(obj != null){
             if(obj instanceof String){
                 context.write(new Text((String)obj), new Text("1"));
             } else if(obj instanceof JSONArray){
