@@ -1,6 +1,7 @@
 package org.pagemining.hadoop.infoextract;
 
 import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.junit.Test;
 import org.pagemining.extractor.xpath.XPathConfig;
@@ -19,5 +20,10 @@ public class TestXPathExtractor {
             config.fromString(array.get(i).toString());
             extractor.AddConfig(config);
         }
+
+
+        String buf = "{\"中文\" : \"很好\"}";
+        JSONObject jsonObject = (JSONObject) JSONValue.parse(buf);
+        System.out.println(jsonObject.containsKey("中文"));
     }
 }

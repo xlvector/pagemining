@@ -1,6 +1,8 @@
 package org.pagemining.hadoop.infoextract;
 
 
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
@@ -40,6 +42,8 @@ public class HBaseUtil {
                 for (KeyValue keyValue : r.raw()) {
                     System.out.println(new String(keyValue.getFamily()));
                     System.out.println(new String(keyValue.getValue()));
+                    JSONObject jsonObject = (JSONObject)JSONValue.parse(keyValue.getValue());
+                    System.out.println(jsonObject.toString());
                 }
                 System.out.println("========");
             }
