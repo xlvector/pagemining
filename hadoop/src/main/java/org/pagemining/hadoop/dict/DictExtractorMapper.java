@@ -17,6 +17,7 @@ import java.util.Map;
 public class DictExtractorMapper extends TableMapper<Text, Text> {
     private String encode(String buf) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
+        sb.append(buf);
         for(byte b : buf.getBytes("UTF-8")){
             sb.append((int)b);
             sb.append("_");
