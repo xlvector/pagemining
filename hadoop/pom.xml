@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase</artifactId>
-            <version>0.94.2-cdh4.2.0</version>
+            <version>0.94.6-cdh4.5.0</version>
         </dependency>
 
         <!-- For unit testing -->

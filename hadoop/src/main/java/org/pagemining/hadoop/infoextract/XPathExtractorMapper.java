@@ -41,6 +41,7 @@ public class XPathExtractorMapper extends MapReduceBase implements Mapper<LongWr
 
         JSONObject jsonDoc = extractor.extract(url, html);
         if(jsonDoc != null){
+            jsonDoc.put("_crawled_at", timestamp);
             collector.collect(new Text(url), new Text(jsonDoc.toString()));
         }
     }

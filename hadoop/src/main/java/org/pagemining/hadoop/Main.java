@@ -3,9 +3,14 @@ package org.pagemining.hadoop;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
+import org.pagemining.hadoop.dict.DictExtractor;
+import org.pagemining.hadoop.dict.DictExtractorMapper;
+import org.pagemining.hadoop.dict.DictExtractorReducer;
 import org.pagemining.hadoop.infoextract.HBaseUtil;
 import org.pagemining.hadoop.infoextract.XPathConfigReader;
 import org.pagemining.hadoop.infoextract.XPathExtractorMapper;
@@ -17,7 +22,6 @@ public class Main {
     public static void main(String [] args) throws Exception{
         JobConf conf = new JobConf();
         conf.setJobName("pagemining");
-
         conf.setJarByClass(Main.class);
         String method = args[0];
 
@@ -25,6 +29,9 @@ public class Main {
             HTable table = new HTable(conf, args[1]);
             HBaseUtil.scan(table, 10);
             table.close();
+        } else if(method.equals("dict-extract")){
+            DictExtractor extractor = new DictExtractor();
+            extractor.Run(args[1]);
         } else{
 
             conf.setMapOutputKeyClass(Text.class);
@@ -44,7 +51,7 @@ public class Main {
             }
             else if(method.equals("info-extract")) {
                 String[] cf = {"data"};
-                HBaseUtil.createTableIfNotExist("crawler-structured-data", conf, cf);
+                HBaseUtil.createTableIfNotExist(Constant.INFO_HBASE_TABLE_NAME, conf, cf);
 
                 String xpathConfig = XPathConfigReader.readConfig(args[3]);
                 conf.set("xpath.config", xpathConfig);

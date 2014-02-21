@@ -8,7 +8,6 @@ import org.junit.Test;
 public class TestXPathExtractor {
     @Test
     public void Test(){
-
         String html = "<html>\n" +
                 "\t<head>\n" +
                 "\t\t<title>Hello World</title>\n" +

@@ -89,14 +89,20 @@ public class XPathExtractor implements Extractor {
                     for(Map.Entry<String, Object> e : templateJSON.entrySet()){
                         if(e.getKey().isEmpty()) continue;
                         if(e.getKey().charAt(0) == '_') continue;
-                        elementJson.put(e.getKey(), extractDocument(element, e.getValue()));
+                        Object obj = extractDocument(element, e.getValue());
+                        if(obj != null){
+                            elementJson.put(e.getKey(), obj);
+                        }
                     }
-                    array.add(elementJson);
+                    if(elementJson.size() > 0){
+                        array.add(elementJson);
+                    }
                 }
                 if(array.size() == 1){
                     return (JSONObject)(array.get(0));
-                }
-                else {
+                } else if(array.size() == 0){
+                    return null;
+                } else {
                     return array;
                 }
             }
@@ -108,10 +114,9 @@ public class XPathExtractor implements Extractor {
 
     private JSONObject extractDocument(String url, Document doc){
         for(XPathConfig site : configs){
-            Pattern pt = Pattern.compile(site.getPattern());
-            Matcher matcher = pt.matcher(url);
-            if(matcher.groupCount() == 1 && matcher.group(0).equals(url)){
+            if(url.matches(site.getPattern())){
                 JSONObject root = (JSONObject)extractDocument(doc, site.getJSONObject());
+                if(root == null) return null;
                 root.put("_name", site.getName());
                 root.put("_pattern", site.getPattern());
                 return root;
