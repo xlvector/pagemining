@@ -42,8 +42,12 @@ public class HBaseUtil {
                 for (KeyValue keyValue : r.raw()) {
                     System.out.println(new String(keyValue.getFamily()));
                     System.out.println(new String(keyValue.getValue()));
-                    JSONObject jsonObject = (JSONObject)JSONValue.parse(keyValue.getValue());
-                    System.out.println(jsonObject.toString());
+                    try{
+                        JSONObject jsonObject = (JSONObject)JSONValue.parse(keyValue.getValue());
+                        System.out.println(jsonObject.toString());
+                    } catch (Exception e){
+                        continue;
+                    }
                 }
                 System.out.println("========");
             }
