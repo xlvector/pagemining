@@ -45,7 +45,9 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
             } else if(obj instanceof JSONArray){
                 JSONArray array = (JSONArray) obj;
                 for(int i = 0; i < array.size(); ++i){
-                    context.write(new Text((String)array.get(i)), new Text("1"));
+                    if(array.get(i) instanceof String){
+                        context.write(new Text((String)array.get(i)), new Text("1"));
+                    }
                 }
             }
         }
