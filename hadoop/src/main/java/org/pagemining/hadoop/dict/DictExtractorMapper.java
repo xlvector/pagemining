@@ -17,7 +17,6 @@ import java.util.Map;
 public class DictExtractorMapper extends TableMapper<Text, Text> {
     private String encode(String buf) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
-        sb.append(buf);
         for(char b : buf.toCharArray()){
             sb.append((int)b);
             sb.append("_");
@@ -49,7 +48,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         if(jsonObject == null) return;
 
         for(Map.Entry<String, Object> e : jsonObject.entrySet()){
-            if(!EqualsUTF8(e.getKey(), "相关词条")) continue;
+            if(!encode(e.getKey()).equals(encode("相关词条"))) continue;
             Object obj = e.getValue();
             if(obj instanceof String){
                 context.write(new Text((String)obj), new Text("1"));
