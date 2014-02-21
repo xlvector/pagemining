@@ -29,6 +29,9 @@ public class TestXPathExtractor {
             System.out.println((int)b);
         }
         System.out.println();
+        for(char ch : buf.toCharArray()){
+            System.out.println(ch);
+        }
         StringBuilder sb = new StringBuilder();
         for(byte b : "中文".getBytes()){
             sb.append((int)b);

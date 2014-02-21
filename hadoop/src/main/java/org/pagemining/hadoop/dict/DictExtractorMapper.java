@@ -18,7 +18,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
     private String encode(String buf) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
         sb.append(buf);
-        for(byte b : buf.getBytes("UTF-8")){
+        for(char b : buf.toCharArray()){
             sb.append((int)b);
             sb.append("_");
         }
@@ -40,7 +40,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         String url = new String(value.getValue("data".getBytes(), "url".getBytes()), "UTF-8");
         String json = new String(value.getValue("data".getBytes(), "data".getBytes()), "UTF-8");
 
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         try{
             jsonObject = (JSONObject) JSONValue.parse(json);
         } catch (Exception e){
@@ -49,8 +49,9 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         if(jsonObject == null) return;
 
         for(Map.Entry<String, Object> e : jsonObject.entrySet()){
-
-            if(!EqualsUTF8(e.getKey(), "相关词条")) continue;
+            context.write(new Text(encode(e.getKey())), new Text("1"));
+            context.write(new Text(encode("相关词条")), new Text("1"));
+            /*if(!EqualsUTF8(e.getKey(), "相关词条")) continue;
             Object obj = e.getValue();
             if(obj instanceof String){
                 context.write(new Text((String)obj), new Text("1"));
@@ -61,7 +62,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
                         context.write(new Text((String)array.get(i)), new Text("1"));
                     }
                 }
-            }
+            }*/
         }
     }
 }
