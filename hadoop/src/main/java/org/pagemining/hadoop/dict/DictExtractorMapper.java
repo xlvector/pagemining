@@ -26,8 +26,8 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
     }
 
     private boolean EqualsUTF8(String a, String b) throws UnsupportedEncodingException {
-        char[] ba = a.toCharArray();
-        char[] bb = a.toCharArray();
+        byte[] ba = a.getBytes("UTF-8");
+        byte[] bb = b.getBytes("UTF-8");
         if(ba.length != bb.length) return false;
         for(int i = 0; i < ba.length; ++i){
             if(ba[i] != bb[i]) return false;
@@ -49,7 +49,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         if(jsonObject == null) return;
 
         for(Map.Entry<String, Object> e : jsonObject.entrySet()){
-            if(!EqualsUTF8(e.getKey(), "相关词条")) continue;
+            if(!e.getKey().equals("相关词条")) continue;
             Object obj = e.getValue();
             if(obj instanceof String){
                 context.write(new Text((String)obj), new Text("1"));
