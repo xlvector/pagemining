@@ -16,8 +16,8 @@ import java.util.Map;
 public class DictExtractorMapper extends TableMapper<Text, Text> {
     @Override
     public void map(ImmutableBytesWritable row, Result value, Context context) throws InterruptedException, IOException {
-        String url = new String(value.getValue("data".getBytes(), "url".getBytes()));
-        String json = new String(value.getValue("data".getBytes(), "data".getBytes()));
+        String url = new String(value.getValue("data".getBytes(), "url".getBytes()), "UTF-8");
+        String json = new String(value.getValue("data".getBytes(), "data".getBytes()), "UTF-8");
 
         JSONObject jsonObject = null;
         try{
