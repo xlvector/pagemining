@@ -22,6 +22,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         }
         return sb.toString();
     }
+
     @Override
     public void map(ImmutableBytesWritable row, Result value, Context context) throws InterruptedException, IOException {
         String url = new String(value.getValue("data".getBytes(), "url".getBytes()), "UTF-8");
@@ -36,8 +37,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         if(jsonObject == null) return;
 
         for(Map.Entry<String, Object> e : jsonObject.entrySet()){
-            context.write(new Text(encode(e.getKey())), new Text("1"));
-            context.write(new Text(encode("相关词条")), new Text("1"));
+            context.write(new Text(e.getKey()), new Text("1"));
             /*
             if(!encode(e.getKey()).equals(encode("相关词条"))) continue;
             Object obj = e.getValue();

@@ -29,9 +29,11 @@ public class TestXPathExtractor {
             System.out.println((int)b);
         }
         System.out.println();
+        StringBuilder sb = new StringBuilder();
         for(byte b : "中文".getBytes()){
-            System.out.println((int)b);
+            sb.append((int)b);
         }
+        System.out.println(sb.toString());
         JSONObject jsonObject = (JSONObject) JSONValue.parse(buf);
         System.out.println(jsonObject.containsKey("中文"));
     }
