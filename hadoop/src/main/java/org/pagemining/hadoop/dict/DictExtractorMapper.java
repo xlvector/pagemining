@@ -18,6 +18,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         String url = new String(value.getValue("data".getBytes(), "url".getBytes()));
         String json = new String(value.getValue("data".getBytes(), "url".getBytes()));
 
+        /*
         JSONObject jsonObject = null;
         try{
             jsonObject = (JSONObject) JSONValue.parse(json);
@@ -36,6 +37,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
                 }
             }
         }
-
+        */
+        context.write(new Text(url), new Text(json));
     }
 }
