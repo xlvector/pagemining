@@ -10,13 +10,14 @@ import org.apache.hadoop.hbase.mapreduce.TableMapper;
 import org.apache.hadoop.io.Text;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
 public class DictExtractorMapper extends TableMapper<Text, Text> {
-    private String encode(String buf){
+    private String encode(String buf) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
-        for(byte b : buf.getBytes()){
+        for(byte b : buf.getBytes("UTF-8")){
             sb.append((int)b);
             sb.append("_");
         }
@@ -37,7 +38,8 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         if(jsonObject == null) return;
 
         for(Map.Entry<String, Object> e : jsonObject.entrySet()){
-            context.write(new Text(e.getKey()), new Text("1"));
+            context.write(new Text(encode(e.getKey())), new Text("1"));
+            context.write(new Text(encode("相关词条")), new Text("1"));
             /*
             if(!encode(e.getKey()).equals(encode("相关词条"))) continue;
             Object obj = e.getValue();
