@@ -18,7 +18,13 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         String url = new String(value.getValue("data".getBytes(), "url".getBytes()));
         String json = new String(value.getValue("data".getBytes(), "url".getBytes()));
 
-        JSONObject jsonObject = (JSONObject) JSONValue.parse(json);
+        JSONObject jsonObject = null;
+        try{
+            jsonObject = (JSONObject) JSONValue.parse(json);
+        } catch (Exception e){
+            return;
+        }
+        if(jsonObject == null) return;
         if(jsonObject.containsKey("相关词条")){
             Object obj = jsonObject.get("相关词条");
             if(obj instanceof String){
