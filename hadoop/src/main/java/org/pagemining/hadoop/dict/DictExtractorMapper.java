@@ -11,6 +11,7 @@ import org.apache.hadoop.io.Text;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class DictExtractorMapper extends TableMapper<Text, Text> {
     @Override
@@ -25,6 +26,7 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
             return;
         }
         if(jsonObject == null) return;
+        /*
         if(jsonObject.containsKey("相关词条")){
             Object obj = jsonObject.get("相关词条");
             if(obj instanceof String){
@@ -35,6 +37,10 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
                     context.write(new Text((String)array.get(i)), new Text("1"));
                 }
             }
+        }
+        */
+        for(Map.Entry<String, Object> e : jsonObject.entrySet()){
+            context.write(new Text(e.getKey()), new Text("1"));
         }
     }
 }
