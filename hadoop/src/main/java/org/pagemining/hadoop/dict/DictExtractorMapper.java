@@ -48,17 +48,10 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         if(jsonObject == null) return;
 
         for(Map.Entry<String, Object> e : jsonObject.entrySet()){
-            if(!e.getKey().equals("引用词条")) continue;
+            if(!e.getKey().equals("电话号码") && !e.getKey().equals("联系电话")) continue;
             Object obj = e.getValue();
             if(obj instanceof String){
-                context.write(new Text((String)obj), new Text("1"));
-            } else if(obj instanceof JSONArray){
-                JSONArray array = (JSONArray) obj;
-                for(int i = 0; i < array.size(); ++i){
-                    if(array.get(i) instanceof String){
-                        context.write(new Text((String)array.get(i)), new Text("1"));
-                    }
-                }
+                context.write(new Text(url), new Text((String)obj));
             }
         }
     }

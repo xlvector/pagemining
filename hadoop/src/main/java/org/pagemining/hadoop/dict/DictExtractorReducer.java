@@ -20,6 +20,8 @@ import java.util.Iterator;
 public class DictExtractorReducer extends Reducer<Text, Text, Text, Text> {
      @Override
      public void reduce(Text key, Iterable<Text> values, Context context) throws java.io.IOException, java.lang.InterruptedException{
-        context.write(key, new Text(String.valueOf(Iterables.size(values))));
+         for(Text value : values){
+            context.write(key, value);
+         }
      }
 }
