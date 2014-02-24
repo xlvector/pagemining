@@ -19,8 +19,8 @@ public class PhoneExtractor implements Extractor {
 
     @Override
     public JSONObject extract(String url, String html) {
-        Document doc = Jsoup.parse(html);
         if(url.matches("http://[a-z]+.58.com/[a-z]+/[0-9]+x.shtml")){
+            Document doc = Jsoup.parse(html);
             return extract58(doc);
         }
         return null;
