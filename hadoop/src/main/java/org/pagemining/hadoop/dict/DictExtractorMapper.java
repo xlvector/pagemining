@@ -11,6 +11,7 @@ import org.apache.hadoop.io.Text;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,26 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         return true;
     }
 
+    private List<String> extractPhone(Object obj){
+        List<String> ret = new ArrayList<String>();
+        if(obj instanceof JSONObject){
+            JSONObject jsonObj = (JSONObject) obj;
+            for(Map.Entry<String, Object> e : jsonObj.entrySet()){
+                if(!e.getKey().equals("电话号码") && !e.getKey().equals("联系电话")) continue;
+                Object v = e.getValue();
+                if(v instanceof String){
+                    ret.add((String) v);
+                } else if(v instanceof JSONObject){
+                    List<String> tmp = extractPhone(v);
+                    for(String buf : tmp){
+                        ret.add(buf);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
     @Override
     public void map(ImmutableBytesWritable row, Result value, Context context) throws InterruptedException, IOException {
         String url = new String(value.getValue("data".getBytes(), "url".getBytes()), "UTF-8");
@@ -47,12 +68,9 @@ public class DictExtractorMapper extends TableMapper<Text, Text> {
         }
         if(jsonObject == null) return;
 
-        for(Map.Entry<String, Object> e : jsonObject.entrySet()){
-            if(!e.getKey().equals("电话号码") && !e.getKey().equals("联系电话")) continue;
-            Object obj = e.getValue();
-            if(obj instanceof String){
-                context.write(new Text(url), new Text((String)obj));
-            }
+        List<String> phones = extractPhone(jsonObject);
+        for(String phone : phones){
+            context.write(new Text(url), new Text(phone));
         }
     }
 }
