@@ -11,6 +11,8 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapred.*;
 import org.pagemining.hadoop.dict.DictExtractor;
 import org.pagemining.hadoop.dict.DictExtractorMapper;
@@ -90,6 +92,8 @@ public class Main {
             }
             conf.set("mapreduce.map.memory.mb", "1024");
             conf.set("mapreduce.reduce.memory.mb", "2048");
+            conf.setBoolean("mapred.compress.map.output", true);
+            conf.setClass("mapred.map.output.compression.codec",GzipCodec.class, CompressionCodec.class);
 
             // KeyValueTextInputFormat treats each line as an input record,
             // and splits the line by the tab character to separate it into key and value
