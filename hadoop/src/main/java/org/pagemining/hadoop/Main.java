@@ -40,7 +40,8 @@ public class Main {
         String method = cmd.getOptionValue("job");
         conf.setJobName(method);
         conf.setJarByClass(Main.class);
-
+        FileSystem fs = FileSystem.get(conf);
+        fs.delete(new Path(cmd.getOptionValue("output")), true);
 
         if (method.equals("hbase-scan")){
             HTable table = new HTable(conf, cmd.getOptionValue("input"));
@@ -96,8 +97,7 @@ public class Main {
             conf.setOutputFormat(TextOutputFormat.class);
 
             conf.setNumReduceTasks(8);
-            FileSystem fs = FileSystem.get(conf);
-            fs.delete(new Path(args[2]), true);
+
             FileInputFormat.addInputPaths(conf, cmd.getOptionValue("input"));
             FileOutputFormat.setOutputPath(conf, new Path(cmd.getOptionValue("output")));
 
