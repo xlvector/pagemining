@@ -30,9 +30,9 @@ public class Main {
         CommandLineParser parser = new BasicParser();
 
         options.addOption("job", true, "job name");
-        options.addOption("input", false, "input path");
-        options.addOption("output", false, "output path");
-        options.addOption("config", false, "config path");
+        options.addOption("input", true, "input path");
+        options.addOption("output", true, "output path");
+        options.addOption("config", true, "config path");
 
         CommandLine cmd = parser.parse(options, args);
 
@@ -69,7 +69,7 @@ public class Main {
             else if(method.equals("info-extract")) {
                 String[] cf = {"data"};
                 HBaseUtil.createTableIfNotExist(Constant.INFO_HBASE_TABLE_NAME, conf, cf);
-                System.out.print(cmd.getOptionValue("config"));
+                System.out.println(cmd.getOptionValue("config"));
                 String xpathConfig = XPathConfigReader.readConfig(cmd.getOptionValue("config"));
                 conf.set("xpath.config", xpathConfig);
                 conf.setMapperClass(XPathExtractorMapper.class);
