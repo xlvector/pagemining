@@ -16,10 +16,8 @@ import java.util.Map;
 public class PhoneExtractorReducer extends MapReduceBase implements Reducer<Text, Text, Text, Text> {
     @Override
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> collector, Reporter reporter) throws IOException {
-        while (values.hasNext()){
-            String value = values.next().toString();
-            collector.collect(key, new Text(value));
-            break;
+        if(values.hasNext()){
+            collector.collect(key, values.next());
         }
     }
 }
