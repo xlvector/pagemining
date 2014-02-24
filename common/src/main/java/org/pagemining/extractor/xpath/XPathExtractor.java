@@ -135,16 +135,22 @@ public class XPathExtractor implements Extractor {
     }
 
     private JSONObject extractDocument(String url, Document doc){
+        JSONObject bestMatchRoot = null;
+        int match = 0;
         for(XPathConfig site : configs){
             if(url.matches(site.getPattern())){
                 JSONObject root = (JSONObject)extractDocument(doc, site.getJSONObject());
-                if(root == null) return null;
-                root.put("_name", site.getName());
-                root.put("_pattern", site.getPattern());
-                return root;
+                if(root != null){
+                    root.put("_name", site.getName());
+                    root.put("_pattern", site.getPattern());
+                    if(root.size() > match){
+                        match = root.size();
+                        bestMatchRoot = root;
+                    }
+                }
             }
         }
-        return null;
+        return bestMatchRoot;
     }
 
     @Override

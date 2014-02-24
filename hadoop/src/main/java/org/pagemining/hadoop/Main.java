@@ -69,7 +69,7 @@ public class Main {
             else if(method.equals("info-extract")) {
                 String[] cf = {"data"};
                 HBaseUtil.createTableIfNotExist(Constant.INFO_HBASE_TABLE_NAME, conf, cf);
-
+                System.out.print(cmd.getOptionValue("config"));
                 String xpathConfig = XPathConfigReader.readConfig(cmd.getOptionValue("config"));
                 conf.set("xpath.config", xpathConfig);
                 conf.setMapperClass(XPathExtractorMapper.class);
