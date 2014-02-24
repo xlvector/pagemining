@@ -1,5 +1,9 @@
 package org.pagemining.hadoop;
 
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.client.HTable;
@@ -22,18 +26,29 @@ import org.slf4j.Logger;
 
 public class Main {
     public static void main(String [] args) throws Exception{
+        Options options = new Options();
+        CommandLineParser parser = new BasicParser();
+
+        options.addOption("job", true, "job name");
+        options.addOption("input", false, "input path");
+        options.addOption("output", false, "output path");
+        options.addOption("config", false, "config path");
+
+        CommandLine cmd = parser.parse(options, args);
+
         JobConf conf = new JobConf();
-        conf.setJobName("pagemining");
+        String method = cmd.getOptionValue("job");
+        conf.setJobName(method);
         conf.setJarByClass(Main.class);
-        String method = args[0];
+
 
         if (method.equals("hbase-scan")){
-            HTable table = new HTable(conf, args[1]);
+            HTable table = new HTable(conf, cmd.getOptionValue("input"));
             HBaseUtil.scan(table, 10);
             table.close();
         } else if(method.equals("dict-extract")){
             DictExtractor extractor = new DictExtractor();
-            extractor.Run(args[1]);
+            extractor.Run(cmd.getOptionValue("output"));
         } else{
 
             conf.setMapOutputKeyClass(Text.class);
@@ -55,7 +70,7 @@ public class Main {
                 String[] cf = {"data"};
                 HBaseUtil.createTableIfNotExist(Constant.INFO_HBASE_TABLE_NAME, conf, cf);
 
-                String xpathConfig = XPathConfigReader.readConfig(args[3]);
+                String xpathConfig = XPathConfigReader.readConfig(cmd.getOptionValue("config"));
                 conf.set("xpath.config", xpathConfig);
                 conf.setMapperClass(XPathExtractorMapper.class);
                 conf.setReducerClass(XPathExtractorReducer.class);
@@ -83,8 +98,8 @@ public class Main {
             conf.setNumReduceTasks(8);
             FileSystem fs = FileSystem.get(conf);
             fs.delete(new Path(args[2]), true);
-            FileInputFormat.addInputPaths(conf, args[1]);
-            FileOutputFormat.setOutputPath(conf, new Path(args[2]));
+            FileInputFormat.addInputPaths(conf, cmd.getOptionValue("input"));
+            FileOutputFormat.setOutputPath(conf, new Path(cmd.getOptionValue("output")));
 
             JobClient.runJob(conf);
         }

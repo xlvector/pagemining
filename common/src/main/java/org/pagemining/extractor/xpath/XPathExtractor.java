@@ -67,6 +67,9 @@ public class XPathExtractor implements Extractor {
         if(elements.size() == 0) return null;
         else if(elements.size() == 1) {
             String text = elements.get(0).text();
+            if(elements.get(0).tagName().equalsIgnoreCase("script")){
+                text = elements.get(0).html();
+            }
             if(tks.length == 3){
                 text = elements.get(0).attr(tks[2]);
             }
@@ -76,6 +79,9 @@ public class XPathExtractor implements Extractor {
             JSONArray jsonArray = new JSONArray();
             for(int i = 0; i < elements.size(); ++i){
                 String text = elements.get(i).text();
+                if(elements.get(i).tagName().equalsIgnoreCase("script")){
+                    text = elements.get(i).html();
+                }
                 if(tks.length == 3){
                     text = elements.get(i).attr(tks[2]);
                 }
