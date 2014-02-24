@@ -12,7 +12,9 @@ import org.pagemining.extractor.xpath.XPathExtractor;
 import java.io.IOException;
 
 public class PhoneExtractorMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text> {
-    private PhoneExtractor extractor = null;
+    private PhoneExtractor extractor = new PhoneExtractor();
+
+
 
     @Override
     public void map(LongWritable key, Text value, OutputCollector<Text, Text> collector, Reporter reporter) throws IOException {
