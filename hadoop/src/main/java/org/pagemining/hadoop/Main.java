@@ -16,6 +16,8 @@ import org.pagemining.hadoop.infoextract.XPathConfigReader;
 import org.pagemining.hadoop.infoextract.XPathExtractorMapper;
 import org.pagemining.hadoop.infoextract.XPathExtractorReducer;
 import org.pagemining.hadoop.linkbase.*;
+import org.pagemining.hadoop.phone.PhoneExtractorMapper;
+import org.pagemining.hadoop.phone.PhoneExtractorReducer;
 import org.slf4j.Logger;
 
 public class Main {
@@ -61,6 +63,10 @@ public class Main {
             else if(method.equals("link-extract")) {
                 conf.setMapperClass(LinkBaseMapper.class);
                 conf.setReducerClass(LinkBaseReducer.class);
+            }
+            else if(method.equals("phone-extract")) {
+                conf.setMapperClass(PhoneExtractorMapper.class);
+                conf.setReducerClass(PhoneExtractorReducer.class);
             }
             else {
                 System.out.println("Does not support METHOD " + method);
