@@ -13,10 +13,17 @@ public class PhoneExtractor implements Extractor {
 
     private JSONObject extract58(Document doc, String link){
         Elements elements = doc.select("#pagenum");
-        if(elements.size() == 0) return null;
-        String pageNumber = elements.get(0).val();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("img_src", "http://image.58.com/showphone.aspx?t=v55&v=" + pageNumber);
+        if(elements.size() > 0){
+            String pageNumber = elements.get(0).val();
+            jsonObject.put("img_src", "http://image.58.com/showphone.aspx?t=v55&v=" + pageNumber);
+        } else {
+            elements = doc.select("#t_phone > img");
+            if(elements.size() > 0){
+                jsonObject.put("img_src", elements.get(0).attr("src"));
+            }
+        }
+        if(jsonObject.size() == 0) return null;
         return jsonObject;
     }
 
@@ -31,6 +38,18 @@ public class PhoneExtractor implements Extractor {
         } catch (MalformedURLException e) {
             return null;
         }
+    }
+
+    private JSONObject extractBaixing(Document doc, String link){
+        JSONObject jsonObject = new JSONObject();
+        Elements elements = doc.select("#num");
+        if(elements.size() == 0) return null;
+        String prefix = elements.get(0).text();
+        elements = doc.select("a[data-contract]");
+        if(elements.size() == 0) return null;
+        String end = elements.get(0).attr("data-contact");
+        jsonObject.put("phone", prefix + end);
+        return jsonObject;
     }
 
     @Override

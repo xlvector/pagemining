@@ -38,9 +38,25 @@ public class XPathExtractor implements Extractor {
     }
 
     private Object extractDocumentByStringTemplate(Element doc, String template){
+        if(!template.contains(";")){
+            return extractDocumentByOnePartStringTemplate(doc, template);
+        }
+        String [] parts = template.split(";");
+        StringBuilder sb = new StringBuilder();
+        for(String part : parts){
+            Object obj = extractDocumentByOnePartStringTemplate(doc, part.trim());
+            if(obj instanceof String){
+                sb.append((String)obj);
+            }
+        }
+        return sb.toString();
+    }
+
+    private Object extractDocumentByOnePartStringTemplate(Element doc, String template){
         if(template.charAt(0) == '{' && template.charAt(template.length() - 1) == '}'){
             return template.substring(1, template.length() - 1);
         }
+
         String [] tks = template.split(",", 3);
         String extractor = null;
         String selector = tks[0].trim();
