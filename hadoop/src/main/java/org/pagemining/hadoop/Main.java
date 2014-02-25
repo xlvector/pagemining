@@ -107,6 +107,7 @@ public class Main {
             conf.setNumReduceTasks(8);
 
             FileInputFormat.addInputPaths(conf, cmd.getOptionValue("input"));
+
             FileOutputFormat.setOutputPath(conf, new Path(cmd.getOptionValue("output")));
 
             JobClient.runJob(conf);

@@ -17,13 +17,19 @@ public class DomainGroupMapper extends MapReduceBase implements Mapper<LongWrita
         try {
             URL url = new URL(link);
             String domain = url.getHost();
-            String [] tks = domain.split(".");
+            String [] tks = domain.split("\\.");
             if(tks.length < 2) return "other";
             String end = tks[tks.length - 1];
             if(!end.equalsIgnoreCase("com") && !end.equalsIgnoreCase("cn") && !end.equalsIgnoreCase("net")){
                 return "other";
             }
-            return tks[tks.length - 2] + "." + tks[tks.length - 1];
+            String ret = tks[tks.length - 2] + "." + tks[tks.length - 1];
+            if(tks.length >= 3){
+                if(ret.equalsIgnoreCase("com.cn") || ret.equalsIgnoreCase("net.cn")){
+                    ret = tks[tks.length - 3] + "." + ret;
+                }
+            }
+            return ret;
         } catch (MalformedURLException e) {
             return "other";
         }
