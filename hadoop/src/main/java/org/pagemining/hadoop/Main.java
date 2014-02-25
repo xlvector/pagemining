@@ -98,7 +98,7 @@ public class Main {
             conf.set("mapreduce.reduce.memory.mb", "2048");
             conf.setBoolean("mapred.compress.map.output", true);
             conf.setClass("mapred.map.output.compression.codec",GzipCodec.class, CompressionCodec.class);
-
+            conf.setBoolean("mapred.reduce.tasks.speculative.execution", false);
             // KeyValueTextInputFormat treats each line as an input record,
             // and splits the line by the tab character to separate it into key and value
             conf.setInputFormat(TextInputFormat.class);
