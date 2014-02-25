@@ -6,16 +6,19 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.GzipCodec;
-import org.apache.hadoop.mapred.MapReduceBase;
-import org.apache.hadoop.mapred.OutputCollector;
-import org.apache.hadoop.mapred.Reducer;
-import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapred.*;
 
 import java.io.IOException;
 import java.util.Iterator;
 
 public class DomainGroupReducer extends MapReduceBase implements Reducer<Text, Text, Text, Text> {
-    private Configuration conf = new Configuration();
+    private Configuration conf = null;
+
+    @Override
+    public void configure(JobConf conf){
+        this.conf = conf;
+    }
+
     @Override
     public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, Text> collector, Reporter reporter) throws IOException {
         String output = "crawler/domains/" + key.toString() + "/data.seq";
