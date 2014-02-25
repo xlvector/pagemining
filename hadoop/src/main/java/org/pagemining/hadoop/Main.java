@@ -82,6 +82,10 @@ public class Main {
                 conf.setMapperClass(LinkBaseMapper.class);
                 conf.setReducerClass(LinkBaseReducer.class);
             }
+            else if(method.equals("domain")) {
+                conf.setMapperClass(DomainGroupMapper.class);
+                conf.setReducerClass(DomainGroupReducer.class);
+            }
             else if(method.equals("phone-extract")) {
                 conf.setMapperClass(PhoneExtractorMapper.class);
                 conf.setReducerClass(PhoneExtractorReducer.class);
