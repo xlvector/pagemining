@@ -11,14 +11,11 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapred.*;
-import org.apache.hadoop.mapred.lib.MultipleOutputs;
 import org.pagemining.hadoop.dict.DictExtractor;
 import org.pagemining.hadoop.domain.DomainGroupTask;
-import org.pagemining.hadoop.domain.DomainUtil;
 import org.pagemining.hadoop.infoextract.HBaseUtil;
 import org.pagemining.hadoop.infoextract.XPathConfigReader;
-import org.pagemining.hadoop.infoextract.XPathExtractorMapper;
-import org.pagemining.hadoop.infoextract.XPathExtractorReducer;
+import org.pagemining.hadoop.infoextract.XPathExtractorTask;
 import org.pagemining.hadoop.linkbase.*;
 import org.pagemining.hadoop.phone.PhoneExtractorMapper;
 import org.pagemining.hadoop.phone.PhoneExtractorReducer;
@@ -51,7 +48,10 @@ public class Main {
             extractor.Run(cmd.getOptionValue("output"));
         } else if(method.equals("domain")){
             DomainGroupTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"));
-        } else{
+        } else if(method.equals("info-extract")) {
+            XPathExtractorTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"), cmd.getOptionValue("config"));
+        }
+        else{
 
             conf.setMapOutputKeyClass(Text.class);
             conf.setMapOutputValueClass(Text.class);
@@ -67,15 +67,6 @@ public class Main {
             else if(method.equals("hive-link")) {
                 conf.setMapperClass(HiveLinkStatMapper.class);
                 conf.setReducerClass(HiveLinkStatReducer.class);
-            }
-            else if(method.equals("info-extract")) {
-                String[] cf = {"data"};
-                HBaseUtil.createTableIfNotExist(Constant.INFO_HBASE_TABLE_NAME, conf, cf);
-                System.out.println(cmd.getOptionValue("config"));
-                String xpathConfig = XPathConfigReader.readConfig(cmd.getOptionValue("config"));
-                conf.set("xpath.config", xpathConfig);
-                conf.setMapperClass(XPathExtractorMapper.class);
-                conf.setReducerClass(XPathExtractorReducer.class);
             }
             else if(method.equals("link-extract")) {
                 conf.setMapperClass(LinkBaseMapper.class);
