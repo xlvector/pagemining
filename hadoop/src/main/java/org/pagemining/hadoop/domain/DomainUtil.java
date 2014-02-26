@@ -23,13 +23,13 @@ public class DomainUtil {
         }
         else if(domain.endsWith(".cn")){
             if(domain.endsWith(".gov.cn")){
-                return "gov.cn";
+                return "gov_cn";
             }
             else if(domain.endsWith(".edu.cn")){
-                return "edu.cn";
+                return "edu_cn";
             }
             else if(domain.endsWith(".org.cn")){
-                return "org.cn";
+                return "org_cn";
             }
             else {
                 return "cn";
@@ -41,6 +41,6 @@ public class DomainUtil {
     }
 
     public static String[] getDomainEnds(){
-        return new String[]{"com", "net", "gov.cn", "edu.cn", "org.cn", "cn", "other"};
+        return new String[]{"com", "net", "gov_cn", "edu_cn", "org_cn", "cn", "other"};
     }
 }
