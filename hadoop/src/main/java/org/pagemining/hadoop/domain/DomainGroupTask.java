@@ -18,15 +18,22 @@ import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import java.io.IOException;
 
 public class DomainGroupTask {
-    public static class Map extends Mapper<LongWritable, Text, LongWritable, Text>{
+    public static class Map extends Mapper<LongWritable, Text, Text, Text>{
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            context.write(key, value);
+            String [] tks = value.toString().split("\t");
+            if(tks.length != 3) return;
+
+            String url = tks[1];
+            String domain = DomainUtil.getDomain(url);
+            if(domain != null){
+                context.write(new Text(domain), value);
+            }
         }
     }
 
-    public static class Reduce extends Reducer<LongWritable, Text, NullWritable, Text> {
+    public static class Reduce extends Reducer<Text, Text, NullWritable, Text> {
         private MultipleOutputs mos;
 
         @Override
@@ -36,17 +43,11 @@ public class DomainGroupTask {
         }
 
         @Override
-        protected void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+            String domain = key.toString();
+            String filename = DomainUtil.getFileNameByDomain(domain);
             for(Text value : values){
-                String [] tks = value.toString().split("\t");
-                if(tks.length != 3) return;
-
-                String url = tks[1];
-                String domain = DomainUtil.getDomain(url);
-                if(domain != null){
-                    String filename = DomainUtil.getFileNameByDomain(domain);
-                    mos.write(NullWritable.get(), value, filename);
-                }
+                mos.write(NullWritable.get(), value, filename);
             }
         }
 
@@ -71,7 +72,7 @@ public class DomainGroupTask {
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
         job.setInputFormatClass(TextInputFormat.class);
-        job.setMapOutputKeyClass(LongWritable.class);
+        job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
