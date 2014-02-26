@@ -31,4 +31,9 @@ public class DomainGroupMapper extends MapReduceBase implements Mapper<LongWrita
             output.collect(new Text(domain), value);
         }
     }
+
+    @Override
+    public void close() throws java.io.IOException{
+        mos.close();
+    }
 }
