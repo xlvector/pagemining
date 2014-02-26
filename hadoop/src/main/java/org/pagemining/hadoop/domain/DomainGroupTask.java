@@ -113,7 +113,7 @@ public class DomainGroupTask {
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
-        job.setNumReduceTasks(16);
+        job.setNumReduceTasks(1);
         job.waitForCompletion(true);
     }
 }
