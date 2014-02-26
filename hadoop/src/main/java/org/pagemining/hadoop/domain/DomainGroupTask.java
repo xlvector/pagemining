@@ -52,7 +52,9 @@ public class DomainGroupTask {
             String domain = key.toString();
             String topDomain = DomainUtil.getTopDomain(domain);
             for(Text value : values){
-                vlist.add(value);
+                if(value.getLength() > 0){
+                    vlist.add(value);
+                }
             }
             String fileName = topDomain;
             if(vlist.size() > 1000){
