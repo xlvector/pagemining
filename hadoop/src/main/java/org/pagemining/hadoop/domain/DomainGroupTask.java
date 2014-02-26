@@ -54,10 +54,7 @@ public class DomainGroupTask {
             sb.append(url);
             sb.append("\t");
             sb.append(DomainUtil.cleanHtml(doc.html()));
-            String domain = DomainUtil.getDomain(url);
-            if(domain != null){
-                context.write(new Text(domain), new Text(sb.toString()));
-            }
+            context.write(new Text(url), new Text(sb.toString()));
         }
     }
 
@@ -72,19 +69,15 @@ public class DomainGroupTask {
 
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            List<Text> vlist = new ArrayList<Text>();
-            String domain = key.toString();
+            String domain = DomainUtil.getDomain(key.toString());
             String topDomain = DomainUtil.getTopDomain(domain);
-            for(Text value : values){
-                if(value.getLength() > 0){
-                    vlist.add(value);
-                }
-            }
+
             String fileName = topDomain;
             fileName = fileName.replace(".", "_");
 
-            for(Text value : vlist){
+            for(Text value : values){
                 mos.write(NullWritable.get(), value, fileName);
+                break;
             }
         }
 
