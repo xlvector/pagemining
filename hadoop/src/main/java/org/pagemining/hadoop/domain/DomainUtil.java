@@ -39,4 +39,8 @@ public class DomainUtil {
             return "other";
         }
     }
+
+    public static String[] getDomainEnds(){
+        return new String[]{"com", "net", "gov.cn", "edu.cn", "org.cn", "cn", "other"};
+    }
 }
