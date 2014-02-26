@@ -28,4 +28,19 @@ public class DomainUtil {
             return null;
         }
     }
+
+    public static String getTopDomain(String domain){
+        String [] tks = domain.split("\\.");
+            if((domain.endsWith(".com") || domain.endsWith(".net"))){
+                return tks[tks.length - 1];
+            }
+            if(domain.endsWith(".cn")){
+                if(domain.endsWith(".com.cn") || domain.endsWith(".gov.cn") || domain.endsWith(".org.cn") || domain.endsWith("edu.cn") || domain.endsWith(".net.cn")){
+                    return tks[tks.length - 2] + "_" + tks[tks.length - 1];
+                } else {
+                    return "cn";
+                }
+            }
+            return "other";
+    }
 }

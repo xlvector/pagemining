@@ -45,7 +45,7 @@ public class DomainGroupTask {
 
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            String domain = key.toString();
+            String domain = DomainUtil.getTopDomain(key.toString());
             for(Text value : values){
                 mos.write(NullWritable.get(), value, domain);
             }
