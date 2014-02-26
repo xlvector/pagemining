@@ -81,9 +81,6 @@ public class DomainGroupTask {
                 }
             }
             String fileName = topDomain;
-            /*if(vlist.size() > 1000){
-                fileName = domain;
-            }*/
             fileName = fileName.replace(".", "_");
 
             for(Text value : vlist){
@@ -100,7 +97,7 @@ public class DomainGroupTask {
     public static void Run(String input, String output) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration conf = new Configuration();
         conf.set("mapreduce.map.memory.mb", "1024");
-        conf.set("mapreduce.reduce.memory.mb", "2048");
+        conf.set("mapreduce.reduce.memory.mb", "4096");
         conf.setBoolean("mapred.compress.map.output", true);
         conf.setClass("mapred.map.output.compression.codec",GzipCodec.class, CompressionCodec.class);
         conf.setBoolean("mapred.output.compress", true);
@@ -118,7 +115,7 @@ public class DomainGroupTask {
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
-        job.setNumReduceTasks(8);
+        job.setNumReduceTasks(16);
         job.waitForCompletion(true);
     }
 }
