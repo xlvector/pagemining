@@ -18,6 +18,8 @@ import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DomainGroupTask {
     public static class Map extends Mapper<LongWritable, Text, Text, Text>{
@@ -46,17 +48,20 @@ public class DomainGroupTask {
 
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            /*String domain = key.toString();
+            List<Text> vlist = new ArrayList<Text>();
+            String domain = key.toString();
             String topDomain = DomainUtil.getTopDomain(domain);
-            int size = Iterables.size(values);
+            for(Text value : values){
+                vlist.add(value);
+            }
             String fileName = topDomain;
-            if(size > 1000){
+            if(vlist.size() > 1000){
                 fileName = domain;
             }
             fileName = fileName.replace(".", "_");
-            */
+
             for(Text value : values){
-                mos.write(NullWritable.get(), value, "test");
+                mos.write(NullWritable.get(), value, fileName);
             }
         }
 
