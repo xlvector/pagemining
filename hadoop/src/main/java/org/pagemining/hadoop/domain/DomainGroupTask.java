@@ -46,7 +46,7 @@ public class DomainGroupTask {
 
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            String domain = key.toString();
+            /*String domain = key.toString();
             String topDomain = DomainUtil.getTopDomain(domain);
             int size = Iterables.size(values);
             String fileName = topDomain;
@@ -55,7 +55,8 @@ public class DomainGroupTask {
             }
             for(Text value : values){
                 mos.write(NullWritable.get(), value, fileName);
-            }
+            }*/
+            mos.write(NullWritable.get(), key, "test");
         }
 
         @Override
@@ -85,7 +86,7 @@ public class DomainGroupTask {
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
-        job.setNumReduceTasks(16);
+        job.setNumReduceTasks(8);
         job.waitForCompletion(true);
     }
 }
