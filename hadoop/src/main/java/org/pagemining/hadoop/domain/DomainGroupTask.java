@@ -44,6 +44,10 @@ public class DomainGroupTask {
                     e.remove();
                 }
             }
+            Elements styles = doc.select("style");
+            for(Element e : styles){
+                e.remove();
+            }
             StringBuilder sb = new StringBuilder();
             sb.append(timestamp);
             sb.append("\t");
