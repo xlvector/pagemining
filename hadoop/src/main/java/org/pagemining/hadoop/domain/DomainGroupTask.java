@@ -71,21 +71,16 @@ public class DomainGroupTask {
 
         @Override
         protected void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            Text maxText = new Text();
-            int length = 0;
             for(Text value : values){
-                if(value.getLength() > length){
-                    maxText = value;
-                    length = value.getLength();
-                }
-            }
-            String[] tks = maxText.toString().split("\t");
-            String domain = DomainUtil.getDomain(tks[0]);
-            String topDomain = DomainUtil.getTopDomain(domain);
+                String[] tks = value.toString().split("\t");
+                String domain = DomainUtil.getDomain(tks[0]);
+                String topDomain = DomainUtil.getTopDomain(domain);
 
-            String fileName = topDomain;
-            fileName = fileName.replace(".", "_");
-            mos.write(key, maxText, fileName);
+                String fileName = topDomain;
+                fileName = fileName.replace(".", "_");
+                mos.write(key, value, fileName);
+            }
+
         }
 
         @Override
