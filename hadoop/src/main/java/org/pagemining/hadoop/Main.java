@@ -7,15 +7,13 @@ import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.mapred.lib.MultipleOutputs;
 import org.pagemining.hadoop.dict.DictExtractor;
-import org.pagemining.hadoop.domain.DomainGroupMapper;
-import org.pagemining.hadoop.domain.DomainGroupReducer;
+import org.pagemining.hadoop.domain.DomainGroupTask;
 import org.pagemining.hadoop.domain.DomainUtil;
 import org.pagemining.hadoop.infoextract.HBaseUtil;
 import org.pagemining.hadoop.infoextract.XPathConfigReader;
@@ -51,6 +49,8 @@ public class Main {
         } else if(method.equals("dict-extract")){
             DictExtractor extractor = new DictExtractor();
             extractor.Run(cmd.getOptionValue("output"));
+        } else if(method.equals("domain")){
+            DomainGroupTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"));
         } else{
 
             conf.setMapOutputKeyClass(Text.class);
@@ -81,13 +81,6 @@ public class Main {
                 conf.setMapperClass(LinkBaseMapper.class);
                 conf.setReducerClass(LinkBaseReducer.class);
             }
-            else if(method.equals("domain")) {
-                conf.setMapperClass(DomainGroupMapper.class);
-                conf.setReducerClass(DomainGroupReducer.class);
-                for(String end : DomainUtil.getDomainEnds()){
-                    MultipleOutputs.addNamedOutput(conf, end, SequenceFileOutputFormat.class, Text.class, Text.class);
-                }
-            }
             else if(method.equals("phone-extract")) {
                 conf.setMapperClass(PhoneExtractorMapper.class);
                 conf.setReducerClass(PhoneExtractorReducer.class);
@@ -105,7 +98,7 @@ public class Main {
             //conf.setBoolean("mapred.reduce.tasks.speculative.execution", false);
 
             conf.setInputFormat(TextInputFormat.class);
-            conf.setOutputFormat(SequenceFileOutputFormat.class);
+            conf.setOutputFormat(TextOutputFormat.class);
 
             conf.setNumReduceTasks(8);
 
