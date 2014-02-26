@@ -13,7 +13,7 @@ public class DomainUtil {
                 return tks[tks.length - 2] + "." + tks[tks.length - 1];
             }
             if(domain.endsWith(".cn")){
-                if(domain.endsWith(".com.cn") || domain.endsWith(".gov.cn") || domain.endsWith(".org.cn") || domain.endsWith("edu.cn") || domain.endsWith(".net.cn")){
+                if(domain.endsWith(".com.cn") || domain.endsWith(".gov.cn") || domain.endsWith(".org.cn") || domain.endsWith(".edu.cn") || domain.endsWith(".net.cn")){
                     if(tks.length >= 3){
                         return tks[tks.length - 3] + "." + tks[tks.length - 2] + "." + tks[tks.length - 1];
                     }
@@ -35,7 +35,7 @@ public class DomainUtil {
                 return tks[tks.length - 1];
             }
             if(domain.endsWith(".cn")){
-                if(domain.endsWith(".com.cn") || domain.endsWith(".gov.cn") || domain.endsWith(".org.cn") || domain.endsWith("edu.cn") || domain.endsWith(".net.cn")){
+                if(domain.endsWith(".com.cn") || domain.endsWith(".gov.cn") || domain.endsWith(".org.cn") || domain.endsWith(".edu.cn") || domain.endsWith(".net.cn")){
                     return tks[tks.length - 2] + "." + tks[tks.length - 1];
                 } else {
                     return "cn";
