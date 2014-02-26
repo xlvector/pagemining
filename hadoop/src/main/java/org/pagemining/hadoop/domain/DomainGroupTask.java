@@ -1,5 +1,6 @@
 package org.pagemining.hadoop.domain;
 
+import com.google.common.collect.Iterables;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -45,9 +46,15 @@ public class DomainGroupTask {
 
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            String domain = DomainUtil.getTopDomain(key.toString());
+            String domain = key.toString();
+            String topDomain = DomainUtil.getTopDomain(domain);
+            int size = Iterables.size(values);
+            String fileName = topDomain;
+            if(size > 1000){
+                fileName = domain;
+            }
             for(Text value : values){
-                mos.write(NullWritable.get(), value, domain);
+                mos.write(NullWritable.get(), value, fileName);
             }
         }
 
