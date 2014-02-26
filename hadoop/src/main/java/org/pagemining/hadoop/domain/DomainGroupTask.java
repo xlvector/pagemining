@@ -55,7 +55,7 @@ public class DomainGroupTask {
             }
             fileName = fileName.replace(".", "_");
             for(Text value : values){
-                mos.write(NullWritable.get(), value, fileName);
+                mos.write(NullWritable.get(), value, "test");
             }
         }
 
