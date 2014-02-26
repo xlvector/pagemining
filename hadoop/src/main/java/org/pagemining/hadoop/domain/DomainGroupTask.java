@@ -39,14 +39,14 @@ public class DomainGroupTask {
         private MultipleOutputs<NullWritable, Text> mos;
 
         @Override
-        public void setup(Context context) throws IOException, InterruptedException{
+        protected void setup(Context context) throws IOException, InterruptedException{
             super.setup(context);
             mos = new MultipleOutputs<NullWritable, Text>(context);
         }
 
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            String domain = key.toString();
+            /*String domain = key.toString();
             String topDomain = DomainUtil.getTopDomain(domain);
             int size = Iterables.size(values);
             String fileName = topDomain;
@@ -54,6 +54,7 @@ public class DomainGroupTask {
                 fileName = domain;
             }
             fileName = fileName.replace(".", "_");
+            */
             for(Text value : values){
                 mos.write(NullWritable.get(), value, "test");
             }
