@@ -57,9 +57,9 @@ public class DomainGroupTask {
                 }
             }
             String fileName = topDomain;
-            if(vlist.size() > 1000){
+            /*if(vlist.size() > 1000){
                 fileName = domain;
-            }
+            }*/
             fileName = fileName.replace(".", "_");
 
             for(Text value : vlist){
