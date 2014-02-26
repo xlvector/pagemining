@@ -94,7 +94,7 @@ public class DomainGroupTask {
 
     public static void Run(String input, String output) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration conf = new Configuration();
-        conf.set("mapreduce.map.memory.mb", "1024");
+        conf.set("mapreduce.map.memory.mb", "2048");
         conf.set("mapreduce.reduce.memory.mb", "4096");
         conf.setBoolean("mapred.compress.map.output", true);
         conf.setClass("mapred.map.output.compression.codec",GzipCodec.class, CompressionCodec.class);
