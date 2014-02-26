@@ -7,40 +7,25 @@ public class DomainUtil {
     public static String getDomain(String link){
         try {
             URL url = new URL(link);
-            String domain = url.getHost();
-            return domain;
+            String domain = url.getHost().toLowerCase();
+            String [] tks = domain.split("\\.");
+            if(tks.length >= 2 && (domain.endsWith(".com") || domain.endsWith(".net"))){
+                return tks[tks.length - 2] + "_" + tks[tks.length - 1];
+            }
+            if(domain.endsWith(".cn")){
+                if(domain.endsWith(".com.cn") || domain.endsWith(".gov.cn") || domain.endsWith(".org.cn") || domain.endsWith("edu.cn") || domain.endsWith(".net.cn")){
+                    if(tks.length >= 3){
+                        return tks[tks.length - 3] + "_" + tks[tks.length - 2] + "_" + tks[tks.length - 1];
+                    }
+                } else {
+                    if(tks.length >= 2){
+                        return tks[tks.length - 2] + "_" + tks[tks.length - 1];
+                    }
+                }
+            }
+            return "other";
         } catch (MalformedURLException e) {
             return null;
         }
-    }
-
-    public static String getFileNameByDomain(String domain){
-        if(domain.endsWith(".com")){
-            return "com";
-        }
-        else if(domain.endsWith(".net")){
-            return "net";
-        }
-        else if(domain.endsWith(".cn")){
-            if(domain.endsWith(".gov.cn")){
-                return "govcn";
-            }
-            else if(domain.endsWith(".edu.cn")){
-                return "educn";
-            }
-            else if(domain.endsWith(".org.cn")){
-                return "orgcn";
-            }
-            else {
-                return "cn";
-            }
-        }
-        else {
-            return "other";
-        }
-    }
-
-    public static String[] getDomainEnds(){
-        return new String[]{"com", "net", "govcn", "educn", "orgcn", "cn", "other"};
     }
 }

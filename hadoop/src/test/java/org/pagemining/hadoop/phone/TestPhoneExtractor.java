@@ -11,7 +11,7 @@ public class TestPhoneExtractor {
 
     @Test
     public void Test(){
-        System.out.println(DomainUtil.getFileNameByDomain("www.58.com"));
+        System.out.println(DomainUtil.getDomain("http://www.sina.com.cn"));
         String html = "<html><body></body><input id=\"pagenum\" value=\"B84DA7BBD3EA6F762555F658AB4CD1F7\" type=\"hidden\" /></html>";
         PhoneExtractor extractor = new PhoneExtractor();
         JSONObject jsonObject = extractor.extract("http://bj.58.com/tech/13478539618433x.shtml", html);
