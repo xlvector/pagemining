@@ -46,8 +46,14 @@ public class DomainUtil {
 
     public static String cleanHtml(String html){
         StringBuilder sb = new StringBuilder();
+        char pch = ' ';
         for(char ch : html.toCharArray()){
             if(ch == '\n' || ch == '\r' || ch == '\t') continue;
+            if(ch == ' ' && pch == ' ') {
+                pch = ch;
+                continue;
+            }
+            pch = ch;
             sb.append(ch);
         }
         return sb.toString();
