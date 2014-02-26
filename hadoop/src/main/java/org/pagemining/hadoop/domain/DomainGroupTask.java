@@ -75,10 +75,15 @@ public class DomainGroupTask {
             String fileName = topDomain;
             fileName = fileName.replace(".", "_");
 
+            Text maxText = new Text();
+            int length = 0;
             for(Text value : values){
-                mos.write(NullWritable.get(), value, fileName);
-                break;
+                if(value.getLength() > length){
+                    maxText = value;
+                    length = value.getLength();
+                }
             }
+            mos.write(NullWritable.get(), maxText, fileName);
         }
 
         @Override
