@@ -10,6 +10,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.BZip2Codec;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.GzipCodec;
+import org.apache.hadoop.io.compress.Lz4Codec;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -98,7 +99,7 @@ public class DomainGroupTask {
         conf.set("mapreduce.map.memory.mb", "1024");
         conf.set("mapreduce.reduce.memory.mb", "2048");
         conf.setBoolean("mapred.compress.map.output", true);
-        conf.setClass("mapred.map.output.compression.codec",GzipCodec.class, CompressionCodec.class);
+        conf.setClass("mapred.map.output.compression.codec",Lz4Codec.class, CompressionCodec.class);
 
         Job job = Job.getInstance(conf);
         FileInputFormat.setInputPaths(job, new Path(input));
