@@ -34,7 +34,7 @@ public class DomainGroupTask {
             String url = tks[1];
             String domain = DomainUtil.getDomain(url);
             if(domain != null){
-                mos.write(NullWritable.get(), value, domain);
+                mos.write(NullWritable.get(), value, "test");
             }
         }
 
