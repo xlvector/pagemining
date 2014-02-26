@@ -16,6 +16,10 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,10 +33,26 @@ public class DomainGroupTask {
             String [] tks = value.toString().split("\t");
             if(tks.length != 3) return;
 
+            String timestamp = tks[0];
             String url = tks[1];
+            String html = tks[2];
+
+            Document doc = Jsoup.parse(html);
+            Elements scripts = doc.select("script");
+            for(Element e : scripts){
+                if(e.html().length() > 256){
+                    e.remove();
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append(timestamp);
+            sb.append("\t");
+            sb.append(url);
+            sb.append("\t");
+            sb.append(DomainUtil.cleanHtml(doc.html()));
             String domain = DomainUtil.getDomain(url);
             if(domain != null){
-                context.write(new Text(domain), value);
+                context.write(new Text(domain), new Text(sb.toString()));
             }
         }
     }

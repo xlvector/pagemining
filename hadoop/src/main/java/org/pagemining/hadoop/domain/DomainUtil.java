@@ -43,4 +43,13 @@ public class DomainUtil {
             }
             return "other";
     }
+
+    public static String cleanHtml(String html){
+        StringBuilder sb = new StringBuilder();
+        for(char ch : html.toCharArray()){
+            if(ch == '\n' || ch == '\r' || ch == '\t') continue;
+            sb.append(ch);
+        }
+        return sb.toString();
+    }
 }
