@@ -7,16 +7,13 @@ import org.apache.commons.cli.Options;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapred.*;
 import org.pagemining.hadoop.dict.DictExtractor;
-import org.pagemining.hadoop.dict.DictExtractorMapper;
-import org.pagemining.hadoop.dict.DictExtractorReducer;
+import org.pagemining.hadoop.domain.DomainGroupMapper;
+import org.pagemining.hadoop.domain.DomainGroupReducer;
 import org.pagemining.hadoop.infoextract.HBaseUtil;
 import org.pagemining.hadoop.infoextract.XPathConfigReader;
 import org.pagemining.hadoop.infoextract.XPathExtractorMapper;
@@ -24,7 +21,6 @@ import org.pagemining.hadoop.infoextract.XPathExtractorReducer;
 import org.pagemining.hadoop.linkbase.*;
 import org.pagemining.hadoop.phone.PhoneExtractorMapper;
 import org.pagemining.hadoop.phone.PhoneExtractorReducer;
-import org.slf4j.Logger;
 
 public class Main {
     public static void main(String [] args) throws Exception{
@@ -98,9 +94,10 @@ public class Main {
             conf.set("mapreduce.reduce.memory.mb", "2048");
             conf.setBoolean("mapred.compress.map.output", true);
             conf.setClass("mapred.map.output.compression.codec",GzipCodec.class, CompressionCodec.class);
-            conf.setBoolean("mapred.reduce.tasks.speculative.execution", false);
-            // KeyValueTextInputFormat treats each line as an input record,
-            // and splits the line by the tab character to separate it into key and value
+            conf.setBoolean("mapred.output.compress", true);
+            conf.setClass("mapred.output.compression.codec", GzipCodec.class, CompressionCodec.class);
+            //conf.setBoolean("mapred.reduce.tasks.speculative.execution", false);
+
             conf.setInputFormat(TextInputFormat.class);
             conf.setOutputFormat(TextOutputFormat.class);
 
