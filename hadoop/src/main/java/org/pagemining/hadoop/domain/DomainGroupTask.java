@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DomainGroupTask {
-    public static class Map extends Mapper<LongWritable, Text, Text, Text>{
+    public static class Map extends Mapper<LongWritable, Text, LongWritable, Text>{
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -49,32 +50,24 @@ public class DomainGroupTask {
                 e.remove();
             }
             StringBuilder sb = new StringBuilder();
-            sb.append(timestamp);
-            sb.append("\t");
             sb.append(url);
             sb.append("\t");
             sb.append(DomainUtil.cleanHtml(doc.html()));
-            context.write(new Text(url), new Text(sb.toString()));
+            context.write(new LongWritable(Long.parseLong(timestamp)), new Text(sb.toString()));
         }
     }
 
-    public static class Reduce extends Reducer<Text, Text, NullWritable, Text> {
-        private MultipleOutputs<NullWritable, Text> mos;
+    public static class Reduce extends Reducer<LongWritable, Text, LongWritable, Text> {
+        private MultipleOutputs<LongWritable, Text> mos;
 
         @Override
         protected void setup(Context context) throws IOException, InterruptedException{
             super.setup(context);
-            mos = new MultipleOutputs<NullWritable, Text>(context);
+            mos = new MultipleOutputs<LongWritable, Text>(context);
         }
 
         @Override
-        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            String domain = DomainUtil.getDomain(key.toString());
-            String topDomain = DomainUtil.getTopDomain(domain);
-
-            String fileName = topDomain;
-            fileName = fileName.replace(".", "_");
-
+        protected void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             Text maxText = new Text();
             int length = 0;
             for(Text value : values){
@@ -83,7 +76,13 @@ public class DomainGroupTask {
                     length = value.getLength();
                 }
             }
-            mos.write(NullWritable.get(), maxText, fileName);
+            String[] tks = maxText.toString().split("\t");
+            String domain = DomainUtil.getDomain(tks[0]);
+            String topDomain = DomainUtil.getTopDomain(domain);
+
+            String fileName = topDomain;
+            fileName = fileName.replace(".", "_");
+            mos.write(key, maxText, fileName);
         }
 
         @Override
@@ -107,10 +106,10 @@ public class DomainGroupTask {
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
         job.setInputFormatClass(TextInputFormat.class);
-        job.setOutputFormatClass(TextOutputFormat.class);
-        job.setMapOutputKeyClass(Text.class);
+        job.setOutputFormatClass(SequenceFileOutputFormat.class);
+        job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(Text.class);
-        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(Text.class);
 
         job.setNumReduceTasks(1);
