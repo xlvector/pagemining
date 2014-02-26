@@ -10,16 +10,16 @@ public class DomainUtil {
             String domain = url.getHost().toLowerCase();
             String [] tks = domain.split("\\.");
             if(tks.length >= 2 && (domain.endsWith(".com") || domain.endsWith(".net"))){
-                return tks[tks.length - 2] + "_" + tks[tks.length - 1];
+                return tks[tks.length - 2] + "." + tks[tks.length - 1];
             }
             if(domain.endsWith(".cn")){
                 if(domain.endsWith(".com.cn") || domain.endsWith(".gov.cn") || domain.endsWith(".org.cn") || domain.endsWith("edu.cn") || domain.endsWith(".net.cn")){
                     if(tks.length >= 3){
-                        return tks[tks.length - 3] + "_" + tks[tks.length - 2] + "_" + tks[tks.length - 1];
+                        return tks[tks.length - 3] + "." + tks[tks.length - 2] + "." + tks[tks.length - 1];
                     }
                 } else {
                     if(tks.length >= 2){
-                        return tks[tks.length - 2] + "_" + tks[tks.length - 1];
+                        return tks[tks.length - 2] + "." + tks[tks.length - 1];
                     }
                 }
             }
@@ -36,7 +36,7 @@ public class DomainUtil {
             }
             if(domain.endsWith(".cn")){
                 if(domain.endsWith(".com.cn") || domain.endsWith(".gov.cn") || domain.endsWith(".org.cn") || domain.endsWith("edu.cn") || domain.endsWith(".net.cn")){
-                    return tks[tks.length - 2] + "_" + tks[tks.length - 1];
+                    return tks[tks.length - 2] + "." + tks[tks.length - 1];
                 } else {
                     return "cn";
                 }
