@@ -80,7 +80,7 @@ public class XPathExtractorTask {
         @Override
         protected void setup(Context context) throws IOException, InterruptedException{
             try {
-                table = new HTable(context.getConfiguration(), "crawler-structured-data");
+                table = new HTable(context.getConfiguration(), Constant.INFO_HBASE_TABLE_NAME);
             } catch (IOException e) {
                 return;
             }
