@@ -11,10 +11,9 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.mapred.*;
-import org.pagemining.hadoop.dict.DictExtractor;
+import org.pagemining.hadoop.phone.PhoneExtractorTask;
 import org.pagemining.hadoop.domain.DomainGroupTask;
 import org.pagemining.hadoop.infoextract.HBaseUtil;
-import org.pagemining.hadoop.infoextract.XPathConfigReader;
 import org.pagemining.hadoop.infoextract.XPathExtractorTask;
 import org.pagemining.hadoop.linkbase.*;
 import org.pagemining.hadoop.phone.PhoneExtractorMapper;
@@ -43,9 +42,8 @@ public class Main {
             HTable table = new HTable(conf, cmd.getOptionValue("input"));
             HBaseUtil.scan(table, 10);
             table.close();
-        } else if(method.equals("dict-extract")){
-            DictExtractor extractor = new DictExtractor();
-            extractor.Run(cmd.getOptionValue("output"));
+        } else if(method.equals("phone-extract")){
+            PhoneExtractorTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"));
         } else if(method.equals("domain")){
             DomainGroupTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"));
         } else if(method.equals("info-extract")) {
@@ -68,10 +66,6 @@ public class Main {
             else if(method.equals("link-extract")) {
                 conf.setMapperClass(LinkBaseMapper.class);
                 conf.setReducerClass(LinkBaseReducer.class);
-            }
-            else if(method.equals("phone-extract")) {
-                conf.setMapperClass(PhoneExtractorMapper.class);
-                conf.setReducerClass(PhoneExtractorReducer.class);
             }
             else {
                 System.out.println("Does not support METHOD " + method);

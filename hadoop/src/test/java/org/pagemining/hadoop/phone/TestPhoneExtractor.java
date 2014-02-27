@@ -15,7 +15,7 @@ public class TestPhoneExtractor {
 
     @Test
     public void Test(){
-        HBaseUtil.getStringSplits(48);
+        System.out.println(HBaseUtil.getEndRowKey("http://www.sina.com.cn/a.html", 48));
         String html = "<html><body><input id=\"pagenum\" value=\"B84DA7BBD3EA6F762555F658AB4CD1F7\" type=\"hidden\" /></body><script>var www = 1;</script></html>";
         Document doc = Jsoup.parse(html);
         //Elements scripts = doc.select("script");
