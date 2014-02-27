@@ -16,8 +16,6 @@ import org.pagemining.hadoop.domain.DomainGroupTask;
 import org.pagemining.hadoop.infoextract.HBaseUtil;
 import org.pagemining.hadoop.infoextract.XPathExtractorTask;
 import org.pagemining.hadoop.linkbase.*;
-import org.pagemining.hadoop.phone.PhoneExtractorMapper;
-import org.pagemining.hadoop.phone.PhoneExtractorReducer;
 
 public class Main {
     public static void main(String [] args) throws Exception{
