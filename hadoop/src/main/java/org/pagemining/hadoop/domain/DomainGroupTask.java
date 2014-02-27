@@ -56,9 +56,8 @@ public class DomainGroupTask {
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             int length = 0;
             Text maxValue = new Text();
-            String domain = key.toString();
-            String topDomain = DomainUtil.getTopDomain(domain);
-            String fileName = topDomain;
+            String domain = DomainUtil.getDomain(key.toString());
+            String fileName = DomainUtil.getTopDomain(domain);
             fileName = fileName.replace(".", "_");
             for(Text value : values){
                 if(value.getLength() > length){
