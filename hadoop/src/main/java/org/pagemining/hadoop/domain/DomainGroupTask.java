@@ -75,7 +75,7 @@ public class DomainGroupTask {
         protected void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             for(Text value : values){
                 String[] tks = value.toString().split("\t");
-                String domain = DomainUtil.getDomain(tks[0]);
+                String domain = DomainUtil.getDomain(tks[1]);
                 String topDomain = DomainUtil.getTopDomain(domain);
 
                 String fileName = topDomain;
