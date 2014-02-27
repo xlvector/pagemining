@@ -3,6 +3,8 @@ package org.pagemining.hadoop.infoextract;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.CharSet;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.client.HTable;
@@ -31,10 +33,15 @@ import org.pagemining.hadoop.Constant;
 import org.pagemining.hadoop.domain.DomainUtil;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class XPathExtractorTask {
+    private static int rowKeyLength = 48;
+
     public static class Map extends Mapper<LongWritable, Text, Text, Text> {
         private XPathExtractor extractor = null;
 
@@ -82,7 +89,7 @@ public class XPathExtractorTask {
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             try {
-                String rowkey = key.toString();
+                String rowkey = HBaseUtil.getRowKey(key.toString(), rowKeyLength);
                 for(Text value : values){
                     java.util.Map<String, String> column = new HashMap<String, String>();
                     context.write(key, value);
@@ -107,12 +114,12 @@ public class XPathExtractorTask {
         conf.set("mapreduce.map.memory.mb", "1024");
         conf.set("mapreduce.reduce.memory.mb", "2048");
         conf.setBoolean("mapred.compress.map.output", true);
-        conf.setClass("mapred.map.output.compression.codec",GzipCodec.class, CompressionCodec.class);
+        conf.setClass("mapred.map.output.compression.codec", GzipCodec.class, CompressionCodec.class);
         conf.setBoolean("mapred.output.compress", true);
         conf.setClass("mapred.output.compression.codec", GzipCodec.class, CompressionCodec.class);
 
         String[] cf = {"data"};
-        HBaseUtil.createTableIfNotExist(Constant.INFO_HBASE_TABLE_NAME, conf, cf);
+        HBaseUtil.createTableIfNotExist(Constant.INFO_HBASE_TABLE_NAME, conf, cf, rowKeyLength);
         String xpathConfig = XPathConfigReader.readConfig(config);
         conf.set("xpath.config", xpathConfig);
 

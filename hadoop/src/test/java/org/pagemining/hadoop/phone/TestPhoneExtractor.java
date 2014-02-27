@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.pagemining.hadoop.domain.DomainUtil;
+import org.pagemining.hadoop.infoextract.HBaseUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,7 +15,7 @@ public class TestPhoneExtractor {
 
     @Test
     public void Test(){
-        System.out.println(DomainUtil.getTopDomain("www.sina.com.cn"));
+        HBaseUtil.getStringSplits(48);
         String html = "<html><body><input id=\"pagenum\" value=\"B84DA7BBD3EA6F762555F658AB4CD1F7\" type=\"hidden\" /></body><script>var www = 1;</script></html>";
         Document doc = Jsoup.parse(html);
         //Elements scripts = doc.select("script");
