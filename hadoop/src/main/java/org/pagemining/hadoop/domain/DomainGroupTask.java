@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DomainGroupTask {
-    public static class Map extends Mapper<LongWritable, Text, NullWritable, Text>{
+    public static class Map extends Mapper<LongWritable, Text, LongWritable, Text>{
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -58,7 +58,7 @@ public class DomainGroupTask {
             sb.append(url);
             sb.append("\t");
             sb.append(DomainUtil.cleanHtml(doc.html()));
-            context.write(NullWritable.get(), new Text(sb.toString()));
+            context.write(key, new Text(sb.toString()));
         }
     }
 
@@ -108,7 +108,7 @@ public class DomainGroupTask {
         job.setReducerClass(Reduce.class);
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
-        job.setMapOutputKeyClass(NullWritable.class);
+        job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
