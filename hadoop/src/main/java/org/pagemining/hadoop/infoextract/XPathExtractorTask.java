@@ -90,6 +90,7 @@ public class XPathExtractorTask {
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             try {
                 String rowkey = HBaseUtil.getRowKey(key.toString(), rowKeyLength);
+                if(rowkey == null) return;
                 for(Text value : values){
                     java.util.Map<String, String> column = new HashMap<String, String>();
                     context.write(key, value);
