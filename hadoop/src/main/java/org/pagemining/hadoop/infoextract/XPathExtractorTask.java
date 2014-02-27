@@ -20,6 +20,7 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -52,20 +53,21 @@ public class XPathExtractorTask {
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String [] tks = value.toString().split("\t");
-            if(tks.length != 2) return;
+            if(tks.length != 3) return;
 
-            String url = tks[0];
-            String html = tks[1];
+            String timestamp = tks[0];
+            String url = tks[1];
+            String html = tks[2];
 
             JSONObject jsonDoc = extractor.extract(url, html);
             if(jsonDoc != null){
-                jsonDoc.put("_crawled_at", String.valueOf(key.get()));
+                jsonDoc.put("_crawled_at", timestamp);
                 context.write(new Text(url), new Text(jsonDoc.toString()));
             }
         }
     }
 
-    public static class Reduce extends Reducer<LongWritable, Text, LongWritable, Text> {
+    public static class Reduce extends Reducer<Text, Text, Text, Text> {
         HTable table = null;
 
         @Override
@@ -78,7 +80,7 @@ public class XPathExtractorTask {
         }
 
         @Override
-        protected void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             try {
                 String rowkey = key.toString();
                 for(Text value : values){
@@ -105,7 +107,9 @@ public class XPathExtractorTask {
         conf.set("mapreduce.map.memory.mb", "1024");
         conf.set("mapreduce.reduce.memory.mb", "2048");
         conf.setBoolean("mapred.compress.map.output", true);
-        conf.setClass("mapred.map.output.compression.codec",Lz4Codec.class, CompressionCodec.class);
+        conf.setClass("mapred.map.output.compression.codec",GzipCodec.class, CompressionCodec.class);
+        conf.setBoolean("mapred.output.compress", true);
+        conf.setClass("mapred.output.compression.codec", GzipCodec.class, CompressionCodec.class);
 
         String[] cf = {"data"};
         HBaseUtil.createTableIfNotExist(Constant.INFO_HBASE_TABLE_NAME, conf, cf);
@@ -119,13 +123,13 @@ public class XPathExtractorTask {
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
         job.setInputFormatClass(TextInputFormat.class);
-        job.setOutputFormatClass(SequenceFileOutputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
-        job.setNumReduceTasks(16);
+        job.setNumReduceTasks(8);
         job.waitForCompletion(true);
     }
 }

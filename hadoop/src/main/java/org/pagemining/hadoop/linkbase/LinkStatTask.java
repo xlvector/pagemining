@@ -11,6 +11,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.hadoop.io.compress.GzipCodec;
 import org.apache.hadoop.io.compress.Lz4Codec;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -19,6 +20,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.pagemining.extractor.xpath.XPathConfig;
 import org.pagemining.extractor.xpath.XPathExtractor;
 import org.pagemining.hadoop.Constant;
@@ -34,10 +36,10 @@ public class LinkStatTask {
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String [] tks = value.toString().split("\t");
-            if(tks.length != 2) return;
+            if(tks.length != 3) return;
 
-            String url = tks[0];
-            String html = tks[1];
+            String url = tks[1];
+            String html = tks[2];
 
             context.write(new Text(url), new IntWritable(1));
         }
@@ -59,7 +61,9 @@ public class LinkStatTask {
         conf.set("mapreduce.map.memory.mb", "1024");
         conf.set("mapreduce.reduce.memory.mb", "2048");
         conf.setBoolean("mapred.compress.map.output", true);
-        conf.setClass("mapred.map.output.compression.codec",Lz4Codec.class, CompressionCodec.class);
+        conf.setClass("mapred.map.output.compression.codec", GzipCodec.class, CompressionCodec.class);
+        conf.setBoolean("mapred.output.compress", true);
+        conf.setClass("mapred.output.compression.codec", GzipCodec.class, CompressionCodec.class);
 
         Job job = Job.getInstance(conf);
         FileInputFormat.setInputPaths(job, new Path(input));
@@ -68,13 +72,13 @@ public class LinkStatTask {
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
         job.setInputFormatClass(TextInputFormat.class);
-        job.setOutputFormatClass(SequenceFileOutputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
-        job.setNumReduceTasks(10);
+        job.setNumReduceTasks(8);
         job.waitForCompletion(true);
     }
 }

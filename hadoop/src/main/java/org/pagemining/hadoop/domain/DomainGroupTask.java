@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DomainGroupTask {
-    public static class Map extends Mapper<LongWritable, Text, LongWritable, Text>{
+    public static class Map extends Mapper<LongWritable, Text, NullWritable, Text>{
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -53,20 +53,22 @@ public class DomainGroupTask {
                 e.remove();
             }
             StringBuilder sb = new StringBuilder();
+            sb.append(timestamp);
+            sb.append("\t");
             sb.append(url);
             sb.append("\t");
             sb.append(DomainUtil.cleanHtml(doc.html()));
-            context.write(new LongWritable(Long.parseLong(timestamp)), new Text(sb.toString()));
+            context.write(NullWritable.get(), new Text(sb.toString()));
         }
     }
 
-    public static class Reduce extends Reducer<LongWritable, Text, LongWritable, Text> {
-        private MultipleOutputs<LongWritable, Text> mos;
+    public static class Reduce extends Reducer<LongWritable, Text, NullWritable, Text> {
+        private MultipleOutputs<NullWritable, Text> mos;
 
         @Override
         protected void setup(Context context) throws IOException, InterruptedException{
             super.setup(context);
-            mos = new MultipleOutputs<LongWritable, Text>(context);
+            mos = new MultipleOutputs<NullWritable, Text>(context);
         }
 
         @Override
@@ -78,7 +80,7 @@ public class DomainGroupTask {
 
                 String fileName = topDomain;
                 fileName = fileName.replace(".", "_");
-                mos.write(key, value, fileName);
+                mos.write(NullWritable.get(), value, fileName);
             }
 
         }
@@ -105,10 +107,10 @@ public class DomainGroupTask {
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
         job.setInputFormatClass(TextInputFormat.class);
-        job.setOutputFormatClass(SequenceFileOutputFormat.class);
-        job.setMapOutputKeyClass(LongWritable.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
+        job.setMapOutputKeyClass(NullWritable.class);
         job.setMapOutputValueClass(Text.class);
-        job.setOutputKeyClass(LongWritable.class);
+        job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
 
         job.setNumReduceTasks(5);
