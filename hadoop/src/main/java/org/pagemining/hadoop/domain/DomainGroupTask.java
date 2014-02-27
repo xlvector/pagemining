@@ -94,9 +94,9 @@ public class DomainGroupTask {
         conf.set("mapreduce.map.memory.mb", "1024");
         conf.set("mapreduce.reduce.memory.mb", "2048");
         conf.setBoolean("mapred.compress.map.output", true);
-        conf.setClass("mapred.map.output.compression.codec",Lz4Codec.class, CompressionCodec.class);
+        conf.setClass("mapred.map.output.compression.codec",GzipCodec.class, CompressionCodec.class);
         conf.setBoolean("mapred.output.compress", true);
-        conf.setClass("mapred.output.compression.codec", BZip2Codec.class, CompressionCodec.class);
+        conf.setClass("mapred.output.compression.codec", GzipCodec.class, CompressionCodec.class);
 
         Job job = Job.getInstance(conf);
         FileInputFormat.setInputPaths(job, new Path(input));
@@ -111,7 +111,7 @@ public class DomainGroupTask {
         job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(Text.class);
 
-        job.setNumReduceTasks(1);
+        job.setNumReduceTasks(5);
         job.waitForCompletion(true);
     }
 }
