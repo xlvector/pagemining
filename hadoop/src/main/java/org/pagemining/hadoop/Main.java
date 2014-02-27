@@ -50,6 +50,8 @@ public class Main {
             DomainGroupTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"));
         } else if(method.equals("info-extract")) {
             XPathExtractorTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"), cmd.getOptionValue("config"));
+        } else if(method.equals("stat")){
+            LinkStatTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"));
         }
         else{
 
@@ -59,12 +61,7 @@ public class Main {
             conf.setOutputKeyClass(Text.class);
             conf.setOutputValueClass(Text.class);
 
-
-            if(method.equals("stat")) {
-                conf.setMapperClass(LinkStatMapper.class);
-                conf.setReducerClass(LinkStatReducer.class);
-            }
-            else if(method.equals("hive-link")) {
+            if(method.equals("hive-link")) {
                 conf.setMapperClass(HiveLinkStatMapper.class);
                 conf.setReducerClass(HiveLinkStatReducer.class);
             }
