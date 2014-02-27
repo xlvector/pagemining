@@ -61,6 +61,28 @@ public class HBaseUtil {
         table.put(put);
     }
 
+    public static String getStartRowKey(String url, int length){
+        String domain = DomainUtil.getDomain(url);
+        StringBuilder sb = new StringBuilder();
+        sb.append(domain.replace(".", "_"));
+        sb.append("_");
+        while (sb.length() < length){
+            sb.append("0");
+        }
+        return sb.toString().substring(0, length);
+    }
+
+    public static String getEndRowKey(String url, int length){
+        String domain = DomainUtil.getDomain(url);
+        StringBuilder sb = new StringBuilder();
+        sb.append(domain.replace(".", "_"));
+        sb.append("_");
+        while (sb.length() < length){
+            sb.append("z");
+        }
+        return sb.toString().substring(0, length);
+    }
+
     public static String getRowKey(String url, int length){
         String domain = DomainUtil.getDomain(url);
         try {

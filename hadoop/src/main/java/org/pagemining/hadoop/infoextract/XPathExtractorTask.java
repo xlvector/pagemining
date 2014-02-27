@@ -37,7 +37,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class XPathExtractorTask {
     private static int rowKeyLength = 48;
@@ -76,6 +78,7 @@ public class XPathExtractorTask {
 
     public static class Reduce extends Reducer<Text, Text, Text, Text> {
         HTable table = null;
+        private Set<String> marks = new HashSet<String>();
 
         @Override
         protected void setup(Context context) throws IOException, InterruptedException{
@@ -99,6 +102,8 @@ public class XPathExtractorTask {
                     HBaseUtil.insert("data", table, rowkey, column);
                     break;
                 }
+                marks.add(HBaseUtil.getStartRowKey(key.toString(), rowKeyLength));
+                marks.add(HBaseUtil.getEndRowKey(key.toString(), rowKeyLength));
             } catch (IOException e){
                 return;
             }
@@ -106,6 +111,12 @@ public class XPathExtractorTask {
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException{
+            for(String key : marks){
+                java.util.Map<String, String> column = new HashMap<String, String>();
+                column.put("url", "mark");
+                column.put("data", "mark");
+                HBaseUtil.insert("data", table, key, column);
+            }
             table.close();
         }
     }
