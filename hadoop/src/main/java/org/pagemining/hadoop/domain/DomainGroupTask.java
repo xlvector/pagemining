@@ -30,39 +30,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DomainGroupTask {
-    public static class Map extends Mapper<LongWritable, Text, LongWritable, Text>{
+    public static class Map extends Mapper<LongWritable, Text, Text, Text>{
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String [] tks = value.toString().split("\t");
             if(tks.length != 3) return;
 
-            String timestamp = tks[0];
             String url = tks[1];
-            String html = tks[2];
 
-            Document doc = Jsoup.parse(html);
-            Elements scripts = doc.select("script");
-            for(Element e : scripts){
-                if(e.html().length() > 256){
-                    e.remove();
-                }
-            }
-            Elements styles = doc.select("style");
-            for(Element e : styles){
-                e.remove();
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.append(timestamp);
-            sb.append("\t");
-            sb.append(url);
-            sb.append("\t");
-            sb.append(DomainUtil.cleanHtml(doc.html()));
-            context.write(key, new Text(sb.toString()));
+            context.write(new Text(url), value);
         }
     }
 
-    public static class Reduce extends Reducer<LongWritable, Text, NullWritable, Text> {
+    public static class Reduce extends Reducer<Text, Text, NullWritable, Text> {
         private MultipleOutputs<NullWritable, Text> mos;
 
         @Override
@@ -72,17 +53,20 @@ public class DomainGroupTask {
         }
 
         @Override
-        protected void reduce(LongWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+            int length = 0;
+            Text maxValue = new Text();
+            String domain = key.toString();
+            String topDomain = DomainUtil.getTopDomain(domain);
+            String fileName = topDomain;
+            fileName = fileName.replace(".", "_");
             for(Text value : values){
-                String[] tks = value.toString().split("\t");
-                String domain = DomainUtil.getDomain(tks[1]);
-                String topDomain = DomainUtil.getTopDomain(domain);
-
-                String fileName = topDomain;
-                fileName = fileName.replace(".", "_");
-                mos.write(NullWritable.get(), value, fileName);
+                if(value.getLength() > length){
+                    length = value.getLength();
+                    maxValue = value;
+                }
             }
-
+            mos.write(NullWritable.get(), maxValue, fileName);
         }
 
         @Override
@@ -108,7 +92,7 @@ public class DomainGroupTask {
         job.setReducerClass(Reduce.class);
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
-        job.setMapOutputKeyClass(LongWritable.class);
+        job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
