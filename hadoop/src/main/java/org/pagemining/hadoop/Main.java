@@ -16,6 +16,7 @@ import org.pagemining.hadoop.domain.DomainGroupTask;
 import org.pagemining.hadoop.infoextract.HBaseUtil;
 import org.pagemining.hadoop.infoextract.XPathExtractorTask;
 import org.pagemining.hadoop.linkbase.*;
+import org.pagemining.hadoop.search.SendDocumentTask;
 
 public class Main {
     public static void main(String [] args) throws Exception{
@@ -48,6 +49,8 @@ public class Main {
             XPathExtractorTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"), cmd.getOptionValue("config"));
         } else if(method.equals("stat")){
             LinkStatTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"));
+        } else if(method.equals("search")){
+            SendDocumentTask.Run();
         }
         else{
 
