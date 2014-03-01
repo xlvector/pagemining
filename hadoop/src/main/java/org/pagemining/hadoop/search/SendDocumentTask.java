@@ -13,6 +13,9 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.pagemining.hadoop.Constant;
 
 import java.io.DataOutputStream;
@@ -43,33 +46,12 @@ public class SendDocumentTask {
             if(jsonObject == null) return;
             jsonObject.put("_url", link);
 
-            URL url = new URL("http://10.180.60.12/documents/doc/" + row.toString());
-
-            HttpURLConnection httpURLConnection = null;
-            DataOutputStream dataOutputStream = null;
-            PrintWriter writer = null;
-            try {
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setConnectTimeout(10000);
-                httpURLConnection.setReadTimeout(10000);
-                httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                httpURLConnection.setRequestMethod("PUT");
-                httpURLConnection.setDoInput(true);
-                httpURLConnection.setDoOutput(true);
-                writer = new PrintWriter(new OutputStreamWriter(httpURLConnection.getOutputStream()));
-                writer.write(jsonObject.toString());
-            }catch (Exception e){
-                e.printStackTrace();
-                return;
-            }finally {
-                if (writer != null) {
-                    writer.flush();
-                    writer.close();
-                }
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
-                }
-            }
+            Client client = new TransportClient()
+                    .addTransportAddress(new InetSocketTransportAddress("10.180.60.12", 80));
+            client.prepareIndex("documents", "doc")
+                    .setSource(jsonObject.toString())
+                    .execute()
+                    .actionGet();
         }
     }
 
