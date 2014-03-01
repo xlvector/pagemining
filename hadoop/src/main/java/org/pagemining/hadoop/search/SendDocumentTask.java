@@ -53,10 +53,16 @@ public class SendDocumentTask {
             if(jsonObject == null) return;
             jsonObject.put("_url", link);
 
-            client.prepareIndex("documents", "doc")
-                    .setSource(jsonObject.toString())
-                    .execute()
-                    .actionGet();
+            try {
+                client.prepareIndex("documents", "doc")
+                        .setSource(jsonObject.toString())
+                        .execute()
+                        .actionGet();
+                context.getCounter(SendDocumentTask.class.getSimpleName(), "send_doc_success").increment(1L);
+            } catch (Exception e){
+                context.getCounter(SendDocumentTask.class.getSimpleName(), "send_doc_exception").increment(1L);
+                return;
+            }
         }
 
         @Override
