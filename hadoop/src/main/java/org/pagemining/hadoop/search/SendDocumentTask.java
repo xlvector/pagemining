@@ -17,6 +17,8 @@ import org.pagemining.hadoop.Constant;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class SendDocumentTask {
 
             HttpURLConnection httpURLConnection = null;
             DataOutputStream dataOutputStream = null;
+            PrintWriter writer = null;
             try {
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setConnectTimeout(10000);
@@ -53,18 +56,15 @@ public class SendDocumentTask {
                 httpURLConnection.setRequestMethod("PUT");
                 httpURLConnection.setDoInput(true);
                 httpURLConnection.setDoOutput(true);
-                dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
-                dataOutputStream.write(jsonObject.toString().getBytes("UTF-8"));
+                writer = new PrintWriter(new OutputStreamWriter(httpURLConnection.getOutputStream()));
+                writer.write(jsonObject.toString());
             }catch (Exception e){
+                e.printStackTrace();
                 return;
             }finally {
-                if (dataOutputStream != null) {
-                    try {
-                        dataOutputStream.flush();
-                        dataOutputStream.close();
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
-                    }
+                if (writer != null) {
+                    writer.flush();
+                    writer.close();
                 }
                 if (httpURLConnection != null) {
                     httpURLConnection.disconnect();
