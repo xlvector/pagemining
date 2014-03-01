@@ -32,6 +32,13 @@ public class SendDocumentTask {
     private static int rowKeyLength = 48;
 
     public static class MapTask extends TableMapper<Text, Text> {
+        private Client client;
+
+        @Override
+        protected void setup(Context context) throws IOException, InterruptedException{
+            client = new TransportClient()
+                    .addTransportAddress(new InetSocketTransportAddress("10.180.60.12", 80));
+        }
 
         @Override
         public void map(ImmutableBytesWritable row, Result value, Context context) throws InterruptedException, IOException {
@@ -46,12 +53,15 @@ public class SendDocumentTask {
             if(jsonObject == null) return;
             jsonObject.put("_url", link);
 
-            Client client = new TransportClient()
-                    .addTransportAddress(new InetSocketTransportAddress("10.180.60.12", 80));
             client.prepareIndex("documents", "doc")
                     .setSource(jsonObject.toString())
                     .execute()
                     .actionGet();
+        }
+
+        @Override
+        protected void cleanup(Context context) throws IOException, InterruptedException {
+            client.close();
         }
     }
 
