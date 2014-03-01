@@ -66,7 +66,7 @@ public class SendDocumentTask {
         }
     }
 
-    public static void Run() throws IOException, ClassNotFoundException, InterruptedException {
+    public static void Run(String output) throws IOException, ClassNotFoundException, InterruptedException {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf);
         job.setJarByClass(SendDocumentTask.class);
@@ -83,7 +83,7 @@ public class SendDocumentTask {
                 Text.class,
                 job);
         job.setNumReduceTasks(0);
-
+        FileOutputFormat.setOutputPath(job, new Path(output));
         job.waitForCompletion(true);
     }
 }

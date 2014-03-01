@@ -50,7 +50,7 @@ public class Main {
         } else if(method.equals("stat")){
             LinkStatTask.Run(cmd.getOptionValue("input"), cmd.getOptionValue("output"));
         } else if(method.equals("search")){
-            SendDocumentTask.Run();
+            SendDocumentTask.Run(cmd.getOptionValue("output"));
         }
         else{
 
