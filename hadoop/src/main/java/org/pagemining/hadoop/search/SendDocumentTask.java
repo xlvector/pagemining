@@ -32,10 +32,17 @@ public class SendDocumentTask {
         public void map(ImmutableBytesWritable row, Result value, Context context) throws InterruptedException, IOException {
             String link = new String(value.getValue("data".getBytes(), "url".getBytes()), "UTF-8");
             String json = new String(value.getValue("data".getBytes(), "data".getBytes()), "UTF-8");
+            JSONObject jsonObject;
+            try{
+                jsonObject = (JSONObject) JSONValue.parse(json);
+            } catch (Exception e){
+                return;
+            }
+            if(jsonObject == null) return;
+            jsonObject.put("_url", link);
 
             URL url = new URL("http://10.180.60.12/documents/" + row.toString());
-            JSONObject jsonObject = (JSONObject)JSONValue.parse(json);
-            jsonObject.put("_url", link);
+
             HttpURLConnection httpURLConnection = null;
             DataOutputStream dataOutputStream = null;
             try {
