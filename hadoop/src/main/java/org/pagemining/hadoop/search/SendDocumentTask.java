@@ -37,7 +37,7 @@ public class SendDocumentTask {
         @Override
         protected void setup(Context context) throws IOException, InterruptedException{
             client = new TransportClient()
-                    .addTransportAddress(new InetSocketTransportAddress("10.180.60.12", 80));
+                    .addTransportAddress(new InetSocketTransportAddress("10.180.60.12", 9300));
         }
 
         @Override
