@@ -40,6 +40,8 @@ public class SendDocumentTask {
             DataOutputStream dataOutputStream = null;
             try {
                 httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setConnectTimeout(10000);
+                httpURLConnection.setReadTimeout(10000);
                 httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 httpURLConnection.setRequestMethod("PUT");
                 httpURLConnection.setDoInput(true);
