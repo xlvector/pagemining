@@ -43,7 +43,7 @@ public class SendDocumentTask {
             if(jsonObject == null) return;
             jsonObject.put("_url", link);
 
-            URL url = new URL("http://10.180.60.12/documents/" + row.toString());
+            URL url = new URL("http://10.180.60.12/documents/doc/" + row.toString());
 
             HttpURLConnection httpURLConnection = null;
             DataOutputStream dataOutputStream = null;
